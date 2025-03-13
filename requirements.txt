@@ -1,0 +1,9 @@
+python-engineio~=4.11.2
+pywebview~=5.2
+Flask~=3.0.3
+Flask-SocketIO~=5.3.7
+Flask-Cors~=5.0.0
+dnspython
+eventlet
+pyserial~=3.5
+numpy~=2.2.3
