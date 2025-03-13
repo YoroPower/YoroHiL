@@ -1,0 +1,3 @@
+[submodule "frontend/my-app/YoroHiL-NEXT"]
+	path = frontend/my-app/YoroHiL-NEXT
+	url = https://github.com/YoroPower/YoroHiL-NEXT.git
