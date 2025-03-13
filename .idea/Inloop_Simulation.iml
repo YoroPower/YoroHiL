@@ -4,6 +4,21 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/backend_or" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/build" />
+      <excludeFolder url="file://$MODULE_DIR$/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/dist/myapp/_internal/MarkupSafe-3.0.2.dist-info" />
+      <excludeFolder url="file://$MODULE_DIR$/dist/myapp/_internal/clr_loader" />
+      <excludeFolder url="file://$MODULE_DIR$/dist/myapp/_internal/flask-3.0.3.dist-info" />
+      <excludeFolder url="file://$MODULE_DIR$/dist/myapp/_internal/frontend/my-app/out/_next" />
+      <excludeFolder url="file://$MODULE_DIR$/dist/myapp/_internal/greenlet" />
+      <excludeFolder url="file://$MODULE_DIR$/dist/myapp/_internal/itsdangerous-2.2.0.dist-info" />
+      <excludeFolder url="file://$MODULE_DIR$/dist/myapp/_internal/markupsafe" />
+      <excludeFolder url="file://$MODULE_DIR$/dist/myapp/_internal/numpy" />
+      <excludeFolder url="file://$MODULE_DIR$/dist/myapp/_internal/numpy-2.2.3.dist-info" />
+      <excludeFolder url="file://$MODULE_DIR$/dist/myapp/_internal/pythonnet" />
+      <excludeFolder url="file://$MODULE_DIR$/dist/myapp/_internal/webview" />
+      <excludeFolder url="file://$MODULE_DIR$/dist/myapp/_internal/werkzeug-3.1.3.dist-info" />
+      <excludeFolder url="file://$MODULE_DIR$/dist/myapp/_internal/wheel-0.41.2.dist-info" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.10 virtualenv at E:\PY64_PROJECT\Inloop_Simulation\venv" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
