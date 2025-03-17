@@ -7,8 +7,8 @@ python -m pip install  symbol
 #用于PY打包成EXE
 Pyinstaller --onefile -w -i aaa.ico --version-file versionCounterfeit.txt main.py -p .\\HandleCAN -p .\\HandleUART -p .\\UI --add-binary=".\\kerneldlls\\ControlCAN.dll;."
 Pyinstaller -w -i aaa.ico --version-file versionCounterfeit.txt main.py -p .\\HandleCAN -p .\\HandleUART -p .\\UI --add-binary=".\\kerneldlls\\ControlCAN.dll;."
-Pyinstaller -w -i aaa.ico main.py -p .\\HandleCAN -p .\\HandleUART -p .\\UI --add-binary=".\\kerneldlls\\ControlCAN.dll;."
-Pyinstaller --onefile  -i al16k.ico --version-file versionCounterfeit.txt main.py -p .\\Frame\\UiLogic\\data\\icons
+Pyinstaller -w -i ./frontend/my-app/out/favicon.ico main.py -p .\\HandleCAN -p .\\HandleUART -p .\\UI --add-binary=".\\kerneldlls\\ControlCAN.dll;."
+Pyinstaller --onefile  -i ./frontend/my-app/out/favicon.ico --version-file versionCounterfeit.txt main.py -p .\\Frame\\UiLogic\\data\\icons
 
 Pyinstaller main.py -p .\\html
 
