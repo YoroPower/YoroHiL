@@ -2,6 +2,7 @@
 from flask import Blueprint, jsonify, request
 from backend.services.heartbeat_service import heartbeat_service
 from backend.services.serial_service import send_topology_data, setComPort
+from backend.cirSim.simMatrix import obj_SimMatrix
 
 api_bp = Blueprint('api', __name__)
 api_test = Blueprint('test', __name__)
@@ -32,6 +33,13 @@ def set_compots():
     data = request.json
     port_name = data.get('port')
     return setComPort(port_name)
+
+
+@api_bp.route('/sim/XML', methods=['POST'])
+def set_sim_XML():
+    data = request.json
+    xml_path = data.get('path')
+    return obj_SimMatrix.loadXML(xml_path)
 
 
 @api_test.route('/set/topology', methods=['POST'])
