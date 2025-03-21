@@ -15,10 +15,10 @@ attrDiode = 6
 attrIP = 7
 
 # 默认参数
-Rs = 1e-9  # 电压源内阻
+Rs = 1e-4  # 电压源内阻
 Ron = 1e-3  # 管开通电阻
 Roff = 1e6  # 管关断电阻
-Rwire = 1e-9  # 线电阻
+Rwire = 1e-4  # 线电阻
 
 
 def psimXML(dt, xml_path):
