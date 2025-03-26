@@ -75,6 +75,10 @@ def psimXML(dt, xml_path):
                 controllables.append({
                     'nodes': nodes[:2]
                 })
+            elif comp_type == "MOSFET":
+                controllables.append({
+                    'nodes': nodes[:2]
+                })
 
             # 定义元件类型与对应参数的映射表
             type_to_param = {
