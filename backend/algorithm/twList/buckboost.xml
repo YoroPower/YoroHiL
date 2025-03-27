@@ -1,0 +1,146 @@
+<PsimSchematic PSIM_VERSION="22.1.0.8.564">
+    <CTimer Tstep="1E-06" Ttotal="0.06" Tprint="0" Iprint="1" Iload="0" Isave="0" ClosePsim="0" FreeRun="0" SimCoder="0" Solver="0" Ratio="4">
+        <ENGINE_DEFAULT RSwitchOn="1E-05" RSwitchOff="1E+07"/>
+        <DSED Solver="0" EndTime="1" MaxStepSize="0.001" MinStepSize="1E-06" MaxDisplayStepSize="1" RelativeError="0.001" PrintTime="0" PrintStep="1" AbsoluteError="1E-06" AbsoluteErrorZeroCross="1E-06" MinOrder="2" MaxOrder="10" EnableSwitchTransOut="0"/>
+    </CTimer>
+    <TI_DMC_VERSION>402</TI_DMC_VERSION>
+    <CCircuit FilePath="E:\PSIM_PROJECT\IN_LOOP\buckboost.psimsch">
+        <Component Type="IGBT" Name="Q2" NodeCount="3">
+            <Coord Page="0" X="495" Y="340" Direction="270" Flip=""/>
+            <Area Page="0" Left="470" Right="520" Top="320" Bottom="360"/>
+            <CNode Index="0" NodeId="1" CircuitType="Power" Page="0" X="470" Y="340">1</CNode>
+            <CNode Index="1" NodeId="2" CircuitType="Power" Page="0" X="520" Y="340">2</CNode>
+            <CNode Index="2" NodeId="3" CircuitType="Power" Page="0" X="490" Y="360">3</CNode>
+            <Param Name="Saturation Voltage" Index="1">0</Param>
+            <Param Name="R_transistor" Index="2">0.1</Param>
+            <Param Name="Diode Voltage Drop" Index="3">0.7</Param>
+            <Param Name="Rd" Index="4">0.001</Param>
+            <Param Name="Initial Position" Index="5">0</Param>
+            <Param Name="Current Flag" Index="6">0</Param>
+            <Param Name="Voltage Flag" Index="7">0</Param>
+        </Component>
+        <Component Type="GATING" Name="G1" NodeCount="1">
+            <Coord Page="0" X="510" Y="470" Direction="180" Flip=""/>
+            <Area Page="0" Left="490" Right="530" Top="460" Bottom="480"/>
+            <CNode Index="0" NodeId="3" CircuitType="Power" Page="0" X="490" Y="470">3</CNode>
+            <Param Name="Frequency" Index="1">50000</Param>
+            <Param Name="No. of Points" Index="2">2</Param>
+            <Param Name="Switching Points" Index="3">{0,72}</Param>
+        </Component>
+        <Component Type="DIODE" Name="D1" NodeCount="2">
+            <Coord Page="0" X="575" Y="340" Direction="0" Flip="X"/>
+            <Area Page="0" Left="550" Right="600" Top="330" Bottom="350"/>
+            <CNode Index="0" NodeId="5" CircuitType="Power" Page="0" X="600" Y="340">5</CNode>
+            <CNode Index="1" NodeId="2" CircuitType="Power" Page="0" X="550" Y="340">2</CNode>
+            <Param Name="Diode Voltage Drop" Index="1">0.7</Param>
+            <Param Name="Rd" Index="2">0.001</Param>
+            <Param Name="Initial Position" Index="3">0</Param>
+            <Param Name="Current Flag" Index="4">0</Param>
+            <Param Name="Voltage Flag" Index="5">0</Param>
+        </Component>
+        <Component Type="R" Name="R3" NodeCount="2">
+            <Coord Page="0" X="600" Y="405" Direction="90" Flip=""/>
+            <Area Page="0" Left="590" Right="610" Top="380" Bottom="430"/>
+            <CNode Index="0" NodeId="5" CircuitType="Power" Page="0" X="600" Y="380">5</CNode>
+            <CNode Index="1" NodeId="4" CircuitType="Power" Page="0" X="600" Y="430">4</CNode>
+            <Param Name="Resistance" Index="1">100</Param>
+            <Param Name="Current Flag" Index="2">0</Param>
+            <Param Name="Voltage Flag" Index="3">0</Param>
+        </Component>
+        <Component Type="VP2" Name="V1" NodeCount="2">
+            <Coord Page="0" X="750" Y="340" Direction="0" Flip=""/>
+            <Area Page="0" Left="730" Right="770" Top="330" Bottom="350"/>
+            <CNode Index="0" NodeId="5" CircuitType="Power" Page="0" X="730" Y="340">5</CNode>
+            <CNode Index="1" NodeId="4" CircuitType="Power" Page="0" X="770" Y="340">4</CNode>
+            <Param Name="enable_flag" Index="1">1</Param>
+        </Component>
+        <Component Type="C" Name="C1" NodeCount="2">
+            <Coord Page="0" X="670" Y="405" Direction="90" Flip=""/>
+            <Area Page="0" Left="660" Right="680" Top="380" Bottom="430"/>
+            <CNode Index="0" NodeId="6" CircuitType="Power" Page="0" X="670" Y="380">6</CNode>
+            <CNode Index="1" NodeId="4" CircuitType="Power" Page="0" X="670" Y="430">4</CNode>
+            <Param Name="Capacitance" Index="1">9.999999999999999E-06</Param>
+            <Param Name="Init. Cap. Voltage" Index="2">0</Param>
+            <Param Name="Current Flag" Index="3">0</Param>
+            <Param Name="Voltage Flag" Index="4">0</Param>
+        </Component>
+        <Component Type="VDC" Name="VDC1" NodeCount="2">
+            <Coord Page="0" X="430" Y="405" Direction="0" Flip=""/>
+            <Area Page="0" Left="420" Right="440" Top="380" Bottom="430"/>
+            <CNode Index="0" NodeId="1" CircuitType="Power" Page="0" X="430" Y="380">1</CNode>
+            <CNode Index="1" NodeId="4" CircuitType="Power" Page="0" X="430" Y="430">4</CNode>
+            <Param Name="Amplitude" Index="1">10</Param>
+            <Param Name="Rseries" Index="2">0.001</Param>
+            <Param Name="Lseries" Index="3">0</Param>
+        </Component>
+        <Component Type="L" Name="L1" NodeCount="2">
+            <Coord Page="0" X="530" Y="405" Direction="90" Flip=""/>
+            <Area Page="0" Left="520" Right="540" Top="380" Bottom="430"/>
+            <CNode Index="0" NodeId="2" CircuitType="Power" Page="0" X="530" Y="380">2</CNode>
+            <CNode Index="1" NodeId="4" CircuitType="Power" Page="0" X="530" Y="430">4</CNode>
+            <Param Name="Inductance" Index="1">0.1</Param>
+            <Param Name="Initial Current" Index="2">0</Param>
+            <Param Name="Current Flag" Index="3">0</Param>
+            <Param Name="Voltage Flag" Index="4">0</Param>
+        </Component>
+        <Component Type="IP" Name="IC" NodeCount="2">
+            <Coord Page="0" X="670" Y="360" Direction="90" Flip=""/>
+            <Area Page="0" Left="660" Right="680" Top="340" Bottom="380"/>
+            <CNode Index="0" NodeId="5" CircuitType="Power" Page="0" X="670" Y="340">5</CNode>
+            <CNode Index="1" NodeId="6" CircuitType="Power" Page="0" X="670" Y="380">6</CNode>
+        </Component>
+        <Wire NodeId="4" SegCount="1">
+            <Segment Page="0" X1="530" Y1="420" X2="530" Y2="430"/>
+        </Wire>
+        <Wire NodeId="4" SegCount="1">
+            <Segment Page="0" X1="600" Y1="430" X2="670" Y2="430"/>
+        </Wire>
+        <Wire NodeId="1" SegCount="2">
+            <Segment Page="0" X1="470" Y1="340" X2="430" Y2="340" X3="430" Y3="380"/>
+        </Wire>
+        <Wire NodeId="5" SegCount="1">
+            <Segment Page="0" X1="600" Y1="380" X2="600" Y2="340"/>
+        </Wire>
+        <Wire NodeId="5" SegCount="3">
+            <Segment Page="0" X1="730" Y1="340" X2="730" Y2="310" X3="670" Y3="310" X4="670" Y4="340"/>
+        </Wire>
+        <Wire NodeId="5" SegCount="1">
+            <Segment Page="0" X1="600" Y1="330" X2="600" Y2="340"/>
+        </Wire>
+        <Wire NodeId="4" SegCount="2">
+            <Segment Page="0" X1="770" Y1="340" X2="770" Y2="430" X3="670" Y3="430"/>
+        </Wire>
+        <Wire NodeId="4" SegCount="1">
+            <Segment Page="0" X1="420" Y1="430" X2="430" Y2="430"/>
+        </Wire>
+        <Wire NodeId="1" SegCount="1">
+            <Segment Page="0" X1="470" Y1="340" X2="470" Y2="350"/>
+        </Wire>
+        <Wire NodeId="4" SegCount="1">
+            <Segment Page="0" X1="430" Y1="430" X2="530" Y2="430"/>
+        </Wire>
+        <Wire NodeId="5" SegCount="1">
+            <Segment Page="0" X1="600" Y1="340" X2="670" Y2="340"/>
+        </Wire>
+        <Wire NodeId="4" SegCount="1">
+            <Segment Page="0" X1="530" Y1="430" X2="600" Y2="430"/>
+        </Wire>
+        <Wire NodeId="2" SegCount="1">
+            <Segment Page="0" X1="530" Y1="380" X2="530" Y2="340"/>
+        </Wire>
+        <Wire NodeId="2" SegCount="1">
+            <Segment Page="0" X1="520" Y1="340" X2="530" Y2="340"/>
+        </Wire>
+        <Wire NodeId="2" SegCount="1">
+            <Segment Page="0" X1="530" Y1="340" X2="550" Y2="340"/>
+        </Wire>
+        <Wire NodeId="3" SegCount="1">
+            <Segment Page="0" X1="490" Y1="360" X2="490" Y2="470"/>
+        </Wire>
+        <Component Type="Label" Name="YONOTT" NodeCount="1" Occurrence="1">
+            <Coord Page="0" X="530" Y="320" Direction="90" Flip=""/>
+            <Area Page="0" Left="520" Right="540" Top="300" Bottom="340"/>
+            <CNode Index="0" NodeId="2" CircuitType="Power" Page="0" X="530" Y="340">2</CNode>
+        </Component>
+    </CCircuit>
+</PsimSchematic>

@@ -102,6 +102,7 @@ def psimXML(dt, xml_path):
                 'L': attrL,
                 'C': attrC,
                 'IGBT': attrIGBT,
+                'MOSFET': attrIGBT,
                 'DIODE': attrDiode,
                 'VDC': attrU,
                 'IP': attrIP,
@@ -246,7 +247,7 @@ def psimXML(dt, xml_path):
 
         G_d = A @ YL @ A.T  # 附加电感节点导纳矩阵
         G_d += A @ YC @ A.T  # 附加电容节点导纳矩阵
-        G_d += (A @ YR_d @ A.T)  # 附加电阻节点导纳矩阵
+        G_d += (A @ YR_d @ A.T)  # 附加电阻 节点导纳矩阵
         YR[state] = YR_d  # 预存电阻导纳
         G_inv[state] = np.linalg.inv(G_d)  # 预计算逆矩阵
 
@@ -264,7 +265,7 @@ def psimXML(dt, xml_path):
 # 调用示例
 if __name__ == "__main__":
     dt = 1e-6  # 仿真步长
-    xml_file_path = "./buckboost.xml"  # XML文件路径
+    xml_file_path = "./twList/buckboost.xml"  # XML文件路径
     results = psimXML(dt, xml_file_path)
 
     # 可以根据需要对结果进行处理
