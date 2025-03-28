@@ -1,28 +1,8 @@
-import numpy as np
-import itertools
 import xml.etree.ElementTree as ET
-from collections import defaultdict
-from backend.algorithm.acclist2A import acclist2A as a2A
-
-# 元件类型属性定义
-# 1独立电压源 2L支路 3C支路 4R支路 5IGBT 6Diode 7电流探头
-attrU = 1
-attrL = 2  # α = 1 β = 1
-attrC = 3  # α = -1 β = 0
-attrR = 4
-attrIGBT = 5
-attrDiode = 6
-attrIP = 7
-
-# 默认参数
-Rs = 1e-4  # 电压源内阻
-Ron = 1e-3  # 管开通电阻
-Roff = 1e6  # 管关断电阻
-Rwire = 1e-4  # 线电阻
-
+from backend.algorithm.wireListCommon import *
 
 def psimXML(dt, xml_path):
-    '''
+    """
     :param dt: 仿真步长(s)
     :param xml_path: psim 生成的接线表 xml 文件路径
     :return: list
@@ -36,14 +16,14 @@ def psimXML(dt, xml_path):
                 7:YL 电感导纳矩阵
                 8:YC 电容导纳矩阵
                 9:J 历史电流源初值
-    '''
+    """
 
     def enhanced_parse(xml_path):
         tree = ET.parse(xml_path)
         root = tree.getroot()
 
         components = []
-        measurement = {'current': [], 'voltage': [], 'Lable': []}
+        measurement = {'current': [], 'voltage': [], 'lable': []}
         controllables = []
         node_coords = defaultdict(list)
 
@@ -65,7 +45,7 @@ def psimXML(dt, xml_path):
                     'nodes': nodes[:2]
                 })
             elif comp_type == "Label":
-                measurement['Lable'].append({
+                measurement['lable'].append({
                     'name': comp.get("Name"),
                     'nodes': nodes[:2]
                 })
@@ -125,10 +105,11 @@ def psimXML(dt, xml_path):
 
     # 解析XML文件
     netlist = enhanced_parse(xml_path)
+    comps, meass = enhanced_parse(xml_path)
 
     # 收集被删除的节点数值（仅IGBT类型的第三个节点）
     deleted_nodes = set()
-    for comp in netlist[0]:
+    for comp in comps:
         if comp['type'] == 'IGBT' and len(comp['nodes']) >= 3:
             deleted_node = comp['nodes'][2]
             deleted_nodes.add(int(deleted_node))
@@ -137,7 +118,7 @@ def psimXML(dt, xml_path):
     new_data = []
 
     # 依据删除节点调整支路列表
-    for comp in netlist[0]:
+    for comp in comps:
         # 截断 nodes 到前两个元素
         truncated_nodes = comp['nodes'][:2]
         # 调整节点号：数值减去所有 <= 当前节点号的被删除节点数
@@ -151,9 +132,10 @@ def psimXML(dt, xml_path):
         new_comp = {**comp, 'nodes': adjusted_nodes}
         new_data.append(new_comp)
 
+    comps = new_data
     # 依据删除节点调整量测列表
-    for key in netlist[1]:
-        for item in netlist[1][key]:
+    for key in meass:
+        for item in meass[key]:
             adjusted_nodes = []
             for node in item['nodes']:
                 n = int(node)
@@ -164,8 +146,8 @@ def psimXML(dt, xml_path):
                 adjusted_nodes.append(str(n))
             item['nodes'] = adjusted_nodes
 
-    accList = [[int(node) for node in item['nodes']] for item in new_data]
-    attr = [item['attr'] for item in new_data]
+    accList = [[int(node) for node in item['nodes']] for item in comps]
+    attr = [item['attr'] for item in comps]
 
     # 处理独立电压源，针对没有放置G地标志的情况
     has_zero = any(0 in pair for pair in accList)
@@ -192,8 +174,8 @@ def psimXML(dt, xml_path):
             accList = new_accList
 
             # 遍历整个量测列表，替换vl为0，且所有大于vl的值减1
-            for key in netlist[1]:
-                for item in netlist[1][key]:
+            for key in meass:
+                for item in meass[key]:
                     new_pair = []
                     for num in item['nodes']:
                         n = int(num)
@@ -206,60 +188,7 @@ def psimXML(dt, xml_path):
                             new_pair.append(n)
                     item['nodes'] = new_pair
 
-    A = a2A(accList)  # 支路-节点矩阵
-
-    # ====================== 矩阵构建 ======================
-    igbt_indices = [i for i, a in enumerate(attr) if (a == attrIGBT or a == attrDiode)]
-    n_igbt = len(igbt_indices)  # IGBT 数量
-
-    # 生成所有开关状态组合（0=OFF，1=ON）以先后顺序形成字典
-    switch_combinations = list(itertools.product([0, 1], repeat=n_igbt))
-
-    # 预存储所有 G 矩阵的字典（以二进制状态为键）
-    G_inv = {}
-    YR = {}
-
-    YL = np.zeros((len(accList), len(accList)))  # 预构建支路列表大小的空矩阵
-    for i in range(len(accList)):
-        if attr[i] == attrL:
-            YL[i, i] = dt / new_data[i]['value']
-
-    YC = np.zeros((len(accList), len(accList)))  # 预构建支路列表大小的空矩阵
-    for i in range(len(accList)):
-        if attr[i] == attrC:
-            YC[i, i] = new_data[i]['value'] / dt
-
-    for state in switch_combinations:
-        YR_d = np.zeros((len(accList), len(accList)))  # 预构建支路列表大小的空矩阵
-
-        for i in range(len(accList)):
-            if attr[i] == attrU:
-                YR_d[i, i] = 1 / Rs
-            if attr[i] == attrR:
-                YR_d[i, i] = 1 / new_data[i]['value']
-            # 动态处理IGBT支路
-            if attr[i] == attrIP:
-                YR_d[i, i] = 1 / Rwire
-            if i in igbt_indices:
-                igbt_pos = igbt_indices.index(i)
-                switch_state = state[igbt_pos]
-                YR_d[i, i] = 1 / (Ron if switch_state == 1 else Roff)
-
-        G_d = A @ YL @ A.T  # 附加电感节点导纳矩阵
-        G_d += A @ YC @ A.T  # 附加电容节点导纳矩阵
-        G_d += (A @ YR_d @ A.T)  # 附加电阻 节点导纳矩阵
-        YR[state] = YR_d  # 预存电阻导纳
-        G_inv[state] = np.linalg.inv(G_d)  # 预计算逆矩阵
-
-    # ====================== 初始化历史变量 ======================
-    J = np.zeros(len(accList))  # 预构建支路列表大小的空矩阵
-    for i in range(len(accList)):
-        if attr[i] == attrU:
-            J[i] = -new_data[i]['value'] / Rs
-        else:
-            J[i] = 0
-
-    return netlist[1], accList, attr, A, n_igbt, G_inv, YR, YL, YC, J
+    return post_processing(dt, comps, accList, attr, meass)
 
 
 # 调用示例
@@ -270,3 +199,4 @@ if __name__ == "__main__":
 
     # 可以根据需要对结果进行处理
     observable_data, accList, attr, A, n_igbt, G_inv, YR, YL, YC, J = results
+
