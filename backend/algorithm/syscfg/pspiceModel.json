@@ -1,0 +1,9 @@
+{
+  "model_definitions": {
+    "IRF2807": {
+      "type": "Q",
+      "node_num": 3,
+      "cnode": 2
+    }
+  }
+}

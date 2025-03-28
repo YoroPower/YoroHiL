@@ -193,9 +193,9 @@ def psimXML(dt, xml_path):
 
 # 调用示例
 if __name__ == "__main__":
-    dt = 1e-6  # 仿真步长
+    tdt = 1e-6  # 仿真步长
     xml_file_path = "./twList/buckboost.xml"  # XML文件路径
-    results = psimXML(dt, xml_file_path)
+    results = psimXML(tdt, xml_file_path)
 
     # 可以根据需要对结果进行处理
     observable_data, accList, attr, A, n_igbt, G_inv, YR, YL, YC, J = results
