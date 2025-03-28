@@ -3,7 +3,7 @@
 '''
 
 from imports import *
-from backend.algorithm import psimXML
+from backend.algorithm import psimXML, pspiceNET
 
 
 class SimMatrix:
@@ -22,11 +22,22 @@ class SimMatrix:
 
         self.dt = 1e-6 # 仿真步长
         self.xml_file_path = None # 已选择的xml文件路径
+        self.net_file_path = None  # 已选择的net文件路径
 
     def loadXML(self, xml_file_path):
         try:
             self.observable_data, self.accList, self.attr, self.A, self.n_igbt, self.G_inv, self.YR, self.YL, self.YC, self.J = psimXML(self.dt, xml_file_path)
             self.xml_file_path = xml_file_path
+
+        except Exception as e:
+            return jsonify({"status": "ERR", "reason": str(e)})
+
+        return jsonify({"status": "OK"})
+
+    def loadNET(self, net_file_path):
+        try:
+            self.observable_data, self.accList, self.attr, self.A, self.n_igbt, self.G_inv, self.YR, self.YL, self.YC, self.J = pspiceNET(self.dt, net_file_path)
+            self.net_file_path = net_file_path
 
         except Exception as e:
             return jsonify({"status": "ERR", "reason": str(e)})

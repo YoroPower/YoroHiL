@@ -35,11 +35,18 @@ def set_compots():
     return setComPort(port_name)
 
 
-@api_bp.route('/sim/XML', methods=['POST'])
+@api_bp.route('/sim/xml', methods=['POST'])
 def set_sim_XML():
     data = request.json
     xml_path = data.get('path')
     return obj_SimMatrix.loadXML(xml_path)
+
+
+@api_bp.route('/sim/net', methods=['POST'])
+def set_sim_NET():
+    data = request.json
+    net_path = data.get('path')
+    return obj_SimMatrix.loadNET(net_path)
 
 
 @api_test.route('/set/topology', methods=['POST'])

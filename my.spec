@@ -4,7 +4,10 @@ block_cipher = None
 a = Analysis(['main.py'],  # 应用程序的主脚本
              pathex=['.'],  # 应用程序路径
              binaries=[],  # 需要包含的二进制文件
-             datas=[('frontend/my-app/out', 'frontend/my-app/out')],  # 包含 HTML 模板
+             datas=[
+             ('frontend/my-app/out', 'frontend/my-app/out'),  # 包含 HTML 模板
+             ('backend/algorithm/syscfg', 'syscfg'), # 包含接线表配置
+             ],
              hiddenimports=['flask', 'flask_socketio', 'eventlet', 'serial',
                             # 这部分是必须手动指明的
                             'engineio.async_eventlet','eventlet.hubs.epolls','eventlet.hubs.kqueue','eventlet.hubs.selects','dns','dns.dnssec','dns.e164','dns.edns','dns.entropy','dns.exception','dns.flags','dns.grange','dns.hash','dns.inet','dns.ipv4','dns.ipv6','dns.message','dns.name','dns.namedict','dns.versioned','dns.node','dns.opcode','dns.query','dns.rcode','dns.rdata','dns.rdataclass','dns.rdataset','dns.rdatatype','dns.renderer','dns.resolver','dns.reversename','dns.rrset','dns.set','dns.tokenizer','dns.tsig','dns.tsigkeyring','dns.ttl','dns.update','dns.version','dns.wiredata','dns.zone','av','fvcore','torch','torchvision','detectron2',

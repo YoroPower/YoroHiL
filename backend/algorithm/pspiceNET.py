@@ -2,6 +2,18 @@ import re
 import json
 from backend.algorithm.wireListCommon import *
 
+import sys
+import os
+def GetPath():
+    # 动态获取当前.exe所在的目录，确保能正确加载资源文件
+    if getattr(sys, 'frozen', False):
+        # 如果是打包后的exe文件运行，'frozen' 属性会被设置
+        app_dir = sys._MEIPASS
+    else:
+        # app_dir = os.path.dirname(os.path.abspath(__file__)) + "\\..\\..\\"
+        app_dir = os.path.dirname(os.path.abspath(__file__))  # 获取当前脚本所在目录
+    return app_dir  # 用法为os.path.join(app_dir, 'aoz2p.ico') os.path.join(GetPath(), 'aoz2p.ico')
+
 def pspiceNET(dt, net_path):
     """
     :param dt: 仿真步长(s)
@@ -31,7 +43,7 @@ def pspiceNET(dt, net_path):
     }
 
     # 模型配置
-    with open('./syscfg/pspiceModel.json', 'r') as json_file:
+    with open(GetPath()+'./syscfg/pspiceModel.json', 'r') as json_file:
         model_config = json.load(json_file)
 
     def parse_value(s):
