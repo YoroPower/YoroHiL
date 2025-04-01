@@ -6,12 +6,13 @@ from backend.algorithm.acclist2A import acclist2A as a2A
 # 元件类型属性定义
 # 1独立电压源 2L支路 3C支路 4R支路 5IGBT 6Diode 7电流探头
 attrU = 1
-attrL = 2  # α = 1 β = 1
-attrC = 3  # α = -1 β = 0
+attrL = 2
+attrC = 3
 attrR = 4
 attrIGBT = 5
 attrDiode = 6
 attrIP = 7
+attrI = 8
 
 # 默认参数
 Rs = 1e-4  # 电压源内阻
@@ -80,6 +81,8 @@ def post_processing(dt, comps,accList, attr, observable_data):
     for i in range(len(accList)):
         if attr[i] == attrU:
             J[i] = -comps[i]['value'] / Rs
+        elif attr[i] == attrI:
+            J[i] = comps[i]['value']
         else:
             J[i] = 0
 

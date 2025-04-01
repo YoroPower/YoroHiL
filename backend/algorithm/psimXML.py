@@ -62,10 +62,11 @@ def psimXML(dt, xml_path):
 
             # 定义元件类型与对应参数的映射表
             type_to_param = {
-                'C': 'Capacitance',
-                'R': 'Resistance',
                 'VDC': 'Amplitude',
+                'IDC': 'Amplitude',
+                'R': 'Resistance',
                 'L': 'Inductance',
+                'C': 'Capacitance',
             }
 
             # --- 提取参数值 ---
@@ -85,6 +86,7 @@ def psimXML(dt, xml_path):
                 'MOSFET': attrIGBT,
                 'DIODE': attrDiode,
                 'VDC': attrU,
+                'IDC': attrI,
                 'IP': attrIP,
                 'VP2': None
             }
