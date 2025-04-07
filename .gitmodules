@@ -1,3 +1,4 @@
 [submodule "frontend/my-app"]
 	path = frontend/my-app
 	url = https://github.com/YoroPower/YoroHiL-NEXT.git
+        branch = Master
