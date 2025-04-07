@@ -1,5 +1,7 @@
 from imports import *
+import atexit
 
+redis_subprocess = None
 
 def GetPath():
     # 动态获取当前.exe所在的目录，确保能正确加载资源文件
@@ -12,6 +14,7 @@ def GetPath():
 
 # 启动Redis服务器
 def start_redis_server():
+    global redis_subprocess
     # Redis服务器和配置文件的路径
     redis_server_path = os.path.join(GetPath(), "Redis_win32", "redis-server.exe")
     redis_conf_path = os.path.join(GetPath(), "Redis_win32", "redis.windows.conf")
@@ -20,12 +23,11 @@ def start_redis_server():
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW  # 隐藏窗口
     startupinfo.wShowWindow = subprocess.SW_HIDE  # 窗口不可见
 
-    subprocess.Popen([redis_server_path, redis_conf_path],
+    redis_subprocess = subprocess.Popen([redis_server_path, redis_conf_path],
                      stdout=subprocess.PIPE,
                      stderr=subprocess.PIPE,
                      startupinfo=startupinfo,  # 应用窗口配置
                      creationflags=subprocess.CREATE_NO_WINDOW)
-
 
 # 检查Redis服务器是否启动
 def check_redis_server():
@@ -36,13 +38,25 @@ def check_redis_server():
     except redis.exceptions.ConnectionError:
         return False
 
+def stop_redis_server():
+    global redis_subprocess
+    if redis_subprocess is not None:
+        redis_subprocess.terminate()  # 终止Redis进程
+        redis_subprocess.wait()  # 等待进程终止
+        redis_subprocess = None
+
 def run_database_rides():
+    atexit.register(stop_redis_server)
     if not check_redis_server(): # 未启动 redis，进行一次启动
         start_redis_server()
 
     # 等待Redis服务器启动
     while not check_redis_server():
         time.sleep(1)
+
+    while True:
+        time.sleep(1)
+
 
 
 if __name__ == '__main__':
@@ -54,3 +68,22 @@ if __name__ == '__main__':
     if process.is_alive():
         print("错误: Redis 启动超时，强制终止")
         process.terminate()
+
+    # 连接到Redis服务器
+    r = redis.Redis(host='localhost', port=os.getenv("REDIS_PORT", 6379), db=0)
+    while True:
+        """ """
+        # 设置键值对
+        r.set('key1', 'value1')
+        # 等待5秒
+        time.sleep(5)
+        # 显示数据
+        data = r.get('key1')
+        print(f'Data: {data.decode()}')
+        # 更新数据
+        r.set('key1', 'new value')
+        # 等待5秒
+        time.sleep(5)
+        # 显示数据
+        data = r.get('key1')
+        print(f'Data: {data.decode()}')
