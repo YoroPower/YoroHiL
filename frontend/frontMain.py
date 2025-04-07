@@ -7,8 +7,9 @@ chinese = {
 
 def run_webview():
     icon_path = "/my-app/out/favicon.ico"
+    port = os.getenv("MAIN_PORT", 12233)
     webview.create_window('InLoop测试',
-                          'http://localhost:5000',
+                          f'http://localhost:{port}',
                           text_select=True,  # 可复制文字
                           zoomable=True,  # 可调整大小
                           confirm_close=True,  # 关闭时提示

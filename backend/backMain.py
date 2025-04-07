@@ -30,11 +30,11 @@ def static_proxy(path):
 
 
 def run_flask():
-    socketio.run(frontApp, host='localhost', port=5000)
+    socketio.run(frontApp, host='localhost', port=os.getenv("MAIN_PORT", 12233))
 
 
 if __name__ == '__main__':
     flask_process = multiprocessing.Process(target=run_flask)
     flask_process.start()
-    print('\nbackMain start')
+    print('\n backMain start')
     flask_process.join()

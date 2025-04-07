@@ -4,7 +4,7 @@ from collections import defaultdict
 from backend.algorithm.acclist2A import acclist2A as a2A
 
 # 元件类型属性定义
-# 1独立电压源 2L支路 3C支路 4R支路 5IGBT 6Diode 7电流探头
+# 1独立电压源 2L支路 3C支路 4R支路 5开关管(含反并铁二极管) 6二极管 7电流探头 8独立电流源
 attrU = 1
 attrL = 2
 attrC = 3

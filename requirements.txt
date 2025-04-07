@@ -7,3 +7,5 @@ dnspython
 eventlet
 pyserial~=3.5
 numpy~=2.2.3
+redis
+python-dotenv
