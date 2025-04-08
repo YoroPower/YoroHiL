@@ -28,9 +28,24 @@ def index():
 def static_proxy(path):
     return send_from_directory(frontApp.static_folder, path)
 
+def run_socketio():
+    # socketio.run(frontApp, host='localhost', port=os.getenv("MAIN_PORT", 12233))
+    socketio.run(frontApp, host='localhost', port=os.getenv("MAIN_PORT", 12233), use_reloader=False)
 
-def run_flask():
-    socketio.run(frontApp, host='localhost', port=os.getenv("MAIN_PORT", 12233))
+def run_flask(event_dict):
+    socketio_process = multiprocessing.Process(target=run_socketio)
+    socketio_process.start()
+
+    while True:
+        if event_dict["flask_exit"].is_set():
+            break
+        time.sleep(1)
+
+    # 自清理
+    socketio_process.terminate()
+    socketio_process.join(timeout=10)
+    if socketio_process.exitcode is None:
+        socketio_process.kill()
 
 
 if __name__ == '__main__':
