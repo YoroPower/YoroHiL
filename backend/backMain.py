@@ -5,11 +5,11 @@ from backend.routes.socket_events import register_socket_events
 
 
 def create_app():
-    app = Flask(__name__, static_folder='../frontend/my-app/out')
-    app.register_blueprint(api_bp, url_prefix='/api')
-    app.register_blueprint(api_test, url_prefix='/api/test')
-    CORS(app, supports_credentials=True)
-    return app
+    productApp = Flask(__name__, static_folder='../frontend/my-app/out')
+    productApp.register_blueprint(api_bp, url_prefix='/api')
+    productApp.register_blueprint(api_test, url_prefix='/api/test')
+    CORS(productApp, supports_credentials=True)
+    return productApp
 
 
 frontApp = create_app()

@@ -18,14 +18,13 @@ def psimXML(dt, xml_path):
                 9:J 历史电流源初值
     """
 
-    def enhanced_parse(xml_path):
-        tree = ET.parse(xml_path)
+    def enhanced_parse(path):
+        tree = ET.parse(path)
         root = tree.getroot()
 
         components = []
         measurement = {'current': [], 'voltage': [], 'lable': []}
         controllables = []
-        node_coords = defaultdict(list)
 
         # 遍历所有元件
         for comp in root.findall(".//CCircuit/Component"):

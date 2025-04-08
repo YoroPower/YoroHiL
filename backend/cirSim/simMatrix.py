@@ -1,6 +1,6 @@
-'''
+"""
 单例模式的电路数据
-'''
+"""
 
 from imports import *
 from backend.algorithm import psimXML, pspiceNET
