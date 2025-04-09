@@ -14,11 +14,13 @@ class SimMatrix:
         self.attr = None  # 支路属性列表
         self.A = None # 支路-节点矩阵
         self.n_igbt = None # 可控器件数量
-        self.G_inv = None # 导纳矩阵的逆
         self.YR = None # 电阻导纳矩阵
         self.YL = None # 电感导纳矩阵
         self.YC = None # 电容导纳矩阵
         self.J = None # 历史电流源初值
+
+        self.G_inv_R = None  # R模拟策略下导纳矩阵的逆
+        self.G_inv_LC = None # LC模拟策略下导纳矩阵的逆
 
         self.dt = 1e-6 # 仿真步长
         self.xml_file_path = None # 已选择的xml文件路径
@@ -26,7 +28,7 @@ class SimMatrix:
 
     def loadXML(self, xml_file_path):
         try:
-            self.observable_data, self.accList, self.attr, self.A, self.n_igbt, self.G_inv, self.YR, self.YL, self.YC, self.J = psimXML(self.dt, xml_file_path)
+            self.observable_data, self.accList, self.attr, self.A, self.n_igbt, self.G_inv_R, self.G_inv_LC, self.YR, self.YL, self.YC, self.J = psimXML(self.dt, xml_file_path)
             self.xml_file_path = xml_file_path
 
         except Exception as e:
@@ -36,7 +38,7 @@ class SimMatrix:
 
     def loadNET(self, net_file_path):
         try:
-            self.observable_data, self.accList, self.attr, self.A, self.n_igbt, self.G_inv, self.YR, self.YL, self.YC, self.J = pspiceNET(self.dt, net_file_path)
+            self.observable_data, self.accList, self.attr, self.A, self.n_igbt, self.G_inv_R, self.G_inv_LC, self.YR, self.YL, self.YC, self.J = pspiceNET(self.dt, net_file_path)
             self.net_file_path = net_file_path
 
         except Exception as e:

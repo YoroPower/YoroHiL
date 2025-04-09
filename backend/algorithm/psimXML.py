@@ -11,11 +11,12 @@ def psimXML(dt, xml_path):
                 2:attr 支路属性列表
                 3:A 支路-节点矩阵
                 4:n_igbt 可控器件数量
-                5:G_inv 导纳矩阵的逆
-                6:YR 电阻导纳矩阵
-                7:YL 电感导纳矩阵
-                8:YC 电容导纳矩阵
-                9:J 历史电流源初值
+                5:G_inv_R R策略导纳矩阵的逆
+                6:G_inv_LC LC策略导纳矩阵的逆
+                7:YR 电阻导纳矩阵
+                8:YL 电感导纳矩阵
+                9:YC 电容导纳矩阵
+                10:J 历史电流源初值
     """
 
     def enhanced_parse(path):
@@ -199,5 +200,6 @@ if __name__ == "__main__":
     results = psimXML(tdt, xml_file_path)
 
     # 可以根据需要对结果进行处理
-    observable_data, accList, attr, A, n_igbt, G_inv, YR, YL, YC, J = results
+    observable_data, accList, attr, A, n_igbt, G_inv_R, G_inv_LC, YR, YL, YC, J = results
 
+    print("OVER")

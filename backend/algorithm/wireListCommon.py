@@ -19,6 +19,7 @@ Rs = 1e-4  # 电压源内阻
 Ron = 1e-3  # 管开通电阻
 Roff = 1e6  # 管关断电阻
 Rwire = 1e-4  # 线电阻
+IGBT_Ysw = 0.1  # 开关管LC等效导纳 大于滤波电感导纳且小于滤波电容导纳 0.001<Ysw<200
 
 
 def post_processing(dt, comps,accList, attr, observable_data):
@@ -41,7 +42,7 @@ def post_processing(dt, comps,accList, attr, observable_data):
     switch_combinations = list(itertools.product([0, 1], repeat=n_igbt))
 
     # 预存储所有 G 矩阵的字典（以二进制状态为键）
-    G_inv = {}
+    G_inv_R = {}
     YR = {}
 
     YL = np.zeros((len(accList), len(accList)))  # 预构建支路列表大小的空矩阵
@@ -74,7 +75,26 @@ def post_processing(dt, comps,accList, attr, observable_data):
         G_d += A @ YC @ A.T  # 附加电容节点导纳矩阵
         G_d += (A @ YR_d @ A.T)  # 附加电阻 节点导纳矩阵
         YR[state] = YR_d  # 预存电阻导纳
-        G_inv[state] = np.linalg.inv(G_d)  # 预计算逆矩阵
+        G_inv_R[state] = np.linalg.inv(G_d)  # 预计算逆矩阵
+
+    YR_d = np.zeros((len(accList), len(accList)))  # 预构建支路列表大小的空矩阵
+
+    for i in range(len(accList)):
+        if attr[i] == attrU:
+            YR_d[i, i] = 1 / Rs
+        if attr[i] == attrR:
+            YR_d[i, i] = 1 / comps[i]['value']
+        # 动态处理IGBT支路
+        if attr[i] == attrIP:
+            YR_d[i, i] = 1 / Rwire
+        if i in igbt_indices:
+            YR_d[i, i] = IGBT_Ysw
+
+    G_d = A @ YL @ A.T  # 附加电感节点导纳矩阵
+    G_d += A @ YC @ A.T  # 附加电容节点导纳矩阵
+    G_d += (A @ YR_d @ A.T)  # 附加电阻 节点导纳矩阵
+    G_inv_LC= np.linalg.inv(G_d)  # 预计算逆矩阵
+
 
     # ====================== 初始化历史变量 ======================
     J = np.zeros(len(accList))  # 预构建支路列表大小的空矩阵
@@ -93,7 +113,8 @@ def post_processing(dt, comps,accList, attr, observable_data):
         attr,
         A,
         n_igbt,
-        G_inv,
+        G_inv_R,
+        G_inv_LC,
         YR,
         YL,
         YC,
