@@ -19,7 +19,7 @@ Rs = 1e-4  # 电压源内阻
 Ron = 1e-3  # 管开通电阻
 Roff = 1e6  # 管关断电阻
 Rwire = 1e-4  # 线电阻
-IGBT_Ysw = 0.1  # 开关管LC等效导纳 大于滤波电感导纳且小于滤波电容导纳 0.001<Ysw<200
+IGBT_Ysw = 0.01  # 开关管LC等效导纳 大于滤波电感导纳且小于滤波电容导纳 0.001<Ysw<200
 
 
 def post_processing(dt, comps,accList, attr, observable_data):
