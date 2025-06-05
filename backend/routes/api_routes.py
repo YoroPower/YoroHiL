@@ -1,7 +1,7 @@
 # routes/api_routes.py
 from flask import Blueprint, jsonify, request
 from backend.services.heartbeat_service import heartbeat_service
-from backend.services.serial_service import send_topology_data, setComPort
+from backend.services.serial_service import  setComPort
 from backend.cirSim.simMatrix import obj_SimMatrix
 
 api_bp = Blueprint('api', __name__)
@@ -51,5 +51,4 @@ def set_sim_NET():
 
 @api_test.route('/set/topology', methods=['POST'])
 def set_topology():
-    data = request.json
-    return send_topology_data(data['value'])
+    return jsonify({"status": "OK"})

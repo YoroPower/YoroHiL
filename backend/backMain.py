@@ -49,7 +49,9 @@ def run_flask(event_dict):
 
 
 if __name__ == '__main__':
-    flask_process = multiprocessing.Process(target=run_flask)
+    manager = multiprocessing.Manager()
+    event_main = manager.dict()
+    flask_process = multiprocessing.Process(target=run_flask, args=(event_main,))
     flask_process.start()
     print('\n backMain start')
     flask_process.join()

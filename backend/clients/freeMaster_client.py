@@ -4,10 +4,21 @@ import asyncio
 import logging
 
 class FreeMasterClient:
-    def __init__(self, machine_url='127.0.0.1', service_port='8090', connection='RS232; port=COM4;speed=115200;'):
+    def __init__(
+            self,
+            machine_url='127.0.0.1',
+            service_port='8090',
+            conn_type='RS232',
+            port='COM4',
+            speed='115200',
+            **kwargs
+    ):
         self.machine_url = machine_url
         self.service_port = service_port
-        self.connection = connection
+        self.conn_type = conn_type
+        self.port = port
+        self.speed = speed
+        self.extra_conn_args = kwargs  # 支持更多参数
         self.service_protocol = 'ws://'
         self.service_url = f"{self.service_protocol}{self.machine_url}:{self.service_port}"
         self.ws = None
@@ -17,6 +28,14 @@ class FreeMasterClient:
         self.MATRIX_MAX_SIZE = None
         self.COMB_MAX_NUM = None
         self.pp_LC_base = None
+
+    def _build_connection(self):
+        # 基本参数
+        conn = f"{self.conn_type}; port={self.port};speed={self.speed};"
+        # 额外参数
+        for k, v in self.extra_conn_args.items():
+            conn += f"{k}={v};"
+        return conn
 
     async def _connect(self):
         if self.ws is None or self.ws.close:
@@ -38,7 +57,8 @@ class FreeMasterClient:
         async def _init():
             try:
                 await self._connect()
-                await self._send_request('StartComm', self.connection)
+                connection = self._build_connection()
+                await self._send_request('StartComm', connection)
                 data = await self._send_request('ReadTSA')
                 data_base = await self._send_request('GetSymbolInfo', "SysMatrixRun.pp_R[0][0][0]")
                 data = await self._send_request('GetSymbolInfo', "SysMatrixRun.pp_R[0][1][0]")
