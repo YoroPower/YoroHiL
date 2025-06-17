@@ -1,5 +1,6 @@
 from imports import *
 
+
 def GetPath():
     # 动态获取当前.exe所在的目录，确保能正确加载资源文件
     if getattr(sys, 'frozen', False):
@@ -8,6 +9,7 @@ def GetPath():
     else:
         app_dir = os.path.dirname(os.path.abspath(__file__))  # 获取当前脚本所在目录
     return app_dir
+
 
 # 启动Redis服务器
 def start_redis_server()-> subprocess.Popen:

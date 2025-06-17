@@ -1,0 +1,382 @@
+--------------------------------------------
+NXP Software Content Register
+
+Release:                   FreeMASTER Lite 1.4.0
+May 2025
+
+Outgoing License:          LA_OPT_NXP_Software_License v60 February 2025 - Additional distribution license granted - Section 2.3 applies
+License File:              LA_OPT_NXP_Software_License.txt
+Type of Content:           source code, binary
+Release Location:          https://www.nxp.com/freemaster
+Origin:                    NXP
+
+--------------------------------------------
+Lone Wolf Project
+Author:             NXP
+License:            LA_OPT_TOOL Software Tools v4 February 2016
+Distribution Type:  binary
+Location:           symlib/pdk.c.lonewolf.*
+
+FreeMASTER Communication Library
+Author:             NXP
+License:            BSD-3-Clause
+Distribution Type:  sources
+Location:           include/mcbcom/
+
+spdlog
+Website:            http://github.com/gabime/spdlog/
+Version:            0.16.3
+License:            MIT License
+Distribution Type:  binary
+Location:           lib/mcbcom.*
+
+Serial Port library
+Website:            https://github.com/wjwwood/serial/
+Version:            1.2.1
+License:            MIT License
+Distribution Type:  binary
+Location:           lib/mcbcom.*
+
+Kvaser CANlib SDK
+Description:        header files enabling FreeMASTER-over-CAN plug-in
+                    interaction with the Kvaser CAN devices
+Author:             KVASER AB, Mölndal, Sweden
+Website:            https://www.kvaser.com
+Version:            5.21
+License:            Kvaser proprietary
+Information origin: canlib.chm file within canlib installer package at
+                    https://www.kvaser.com/download/?utm_source=software&utm_ean=7330130980150&utm_status=latest
+Distribution Type:  binary
+Location:           plugins/can/focpgi.dll
+
+ZLG CAN SDK
+Description:        header files enabling FreeMASTER-over-CAN plug-in
+                    interaction with the ZLG CAN devices
+Author:             Guangzhou ZHIYUAN Electronics Co., Ltd
+Website:            https://www.zlg.com
+Version:            USBCAN_AllInOne/2.0.0.1
+License:            ZLG proprietary
+Information origin: https://www.zlg.com/index.php/can/down/down/id/22.html
+Distribution Type:  binary
+Location:           plugins/can/focpgi.dll
+
+GLinker CAN SDK
+Description:        header files enabling FreeMASTER-over-CAN plug-in
+                    interaction with the GLinker CAN devices
+Author:             Wuhan Jiyangyang Technology Co., Ltd
+Website:            http://www.glinker.cn
+Version:            6.11
+License:            GLinker proprietary
+Distribution Type:  binary
+Location:           plugins/can/focpgi.dll
+
+Viewtool CAN SDK
+Description:        header files enabling FreeMASTER-over-CAN plug-in
+                    interaction with the Viewtool Gingo CAN devices
+Author:             ViewTool Virtual Instruments CO., LTD. www.viewtool.com
+Website:            http://viewtool.com/index.php/en/25-api/36-ginkgo-usb-can-api
+Version:            2.0
+License:            BSD-3-Clause
+Distribution Type:  binary
+Location:           plugins/can/focpgi.dll
+
+IXXAT CAN VCI V4 Driver
+Description:        header files enabling FreeMASTER-over-CAN plug-in
+                    interaction with the IXXAT CAN devices
+Author:             HMS Industrial Networks AB
+Website:            https://www.ixxat.com
+Version:            4.0
+License:            IXXAT Proprietary
+Information origin: IX_License_HW&SW.txt within VCI V4 Driver package at
+                    https://www.ixxat.com/support/file-and-documents-download/drivers
+Distribution Type:  binary
+Location:           plugins/can/focpgi.dll
+
+ICS IntrepidCS neoVI
+Description:        header files enabling FreeMASTER-over-CAN plug-in
+                    interaction with the ICS IntrepidCS neoVI CAN devices
+Author:             Intrepid Control Systems, Inc.
+Website:            https://www.intrepidcs.com
+Version:            icsneo40
+License:            IntrepidCS proprietary
+License origin:     https://github.com/intrepidcs/libicsneo/blob/master/LICENSE
+Information origin: https://cdn.intrepidcs.net/support/neoVIDLL/neoVIDLLhelpdoc.html
+Distribution Type:  binary
+Location:           plugins/can/focpgi.dll
+
+Vector XL Driver Library
+Description:        header files enabling FreeMASTER-over-CAN plug-in
+                    interaction with the Vector devices
+Author:             Vector Informatik GmbH.
+Website:            https://www.vector.com
+Version:            11.6
+License:            Vector proprietary
+Information origin: https://www.vector.com/xl-lib/11/ and https://kb.vector.com/entry/384/
+Distribution Type:  binary
+Location:           plugins/can/focpgi.dll
+
+National Instruments NI-CAN SDK
+Description:        header files enabling FreeMASTE plug-ins
+                    interaction with National Instruments CAN and LIN devices
+Author:             National Instruments
+Website:            http://www.ni.com
+Version:            2.5
+License:            National Instruments proprietary, NI-CAN SDK free to comp
+Information origin: http://www.ni.com/pdf/manuals/374799f.htm#legal
+Distribution Type:  binary
+Location:           plugins/can/focpgi.dll
+
+PEAK-System PCANBasic Library
+Description:        header files enabling FreeMASTER-over-CAN plug-in
+                    interaction with the PEAK CAN devices
+Author:             PEAK-System Technik GmbH
+Website:            https://peak.com/
+Version:            1.0
+License:            PEAK-System proprietary EULA
+Information origin: https://www.peak-system.com/PCAN-Basic.239.0.html and https://www.peak-system.com/EULA.495.0.html
+Distribution Type:  binary
+Location:           plugins/can/focpgi.dll
+
+Segger j-link interface DLL
+Description:        binary library required by FreeMASTER BDM plug-in
+Author:             SEGGER Microcontroller GmbH
+Website:            https://www.segger.com/
+Version:            6.88
+License:            Vendor-proprietary, no redistribution by users, use solely with FreeMASTER tool
+Distribution Type:  binary
+Location:           plugins/bdm/JLinkARM.dll, plugins/bdm/JLink_x64.dll
+
+ARM CMSIS-DAP interface DLL
+Description:        Arm Toolkit library required by FreeMASTER BDM plug-in
+Author:             ARM Limited and ARM Germany GmbH
+Website:            https://www.arm.com/
+Version:            0.2.15.0
+License:            Arm Proprietary, no redistribution by users, use solely with FreeMASTER tool
+Information origin: https://github.com/ARM-software/CMSIS/blob/master/CMSIS/DAP/CMSIS-DAP%20EULA.pdf
+Distribution Type:  binary
+Location:           plugins/bdm/CMSIS_DAP.dll
+
+P&E Micro interface DLLs
+Description:        header files, binary libraries and accompanying files required by FreeMASTER BDM plug-in
+Author:             P&E Microcomputer Systems
+Website:            http://www.pemicro.com/
+Version:            8.95
+License:            Vendor-proprietary, no redistribution by users, use solely with FreeMASTER tool
+Distribution Type:  binary
+Location:           plugins/bdm/osbdm*.dll, plugins/bdm/unit*.dll, plugins/bdm/peosbdmv1.dll, plugins/bdm/supportFiles_ARM/*
+
+Bootstrap
+Website:            https://getbootstrap.com
+Version:            5.3.3
+License:            MIT License
+Distribution Type:  sources
+Location:           html/vendors/bootstrap/
+
+Chart.js
+Website:            https://chartjs.org
+Version:            2.9.4
+License:            MIT License
+Distribution Type:  sources
+Location:           html/vendors/chart/
+
+FileSaver.js
+Website:            https://purl.eligrey.com/github/FileSaver.js
+License:            MIT License
+Distribution Type:  sources
+Location:           html/vendors/fileSaver/
+
+jQuery
+Website:            https://jquery.org
+Version:            3.7.1
+License:            MIT License
+Distribution Type:  sources
+Location:           html/vendors/jquery/
+
+jQuery UI
+Website:            https://jqueryui.com
+Version:            1.14.1
+License:            MIT License
+Distribution Type:  sources
+Location:           html/vendors/jquery-ui/
+
+jQuery layout
+Website:            http://layout.jquery-dev.com
+Version:            1.4.4
+License:            MIT License
+Distribution Type:  sources
+Location:           html/vendors/jquery.layout/
+
+jsTree
+Website:            https://www.jstree.com/
+Version:            3.3.7
+License:            MIT License
+Distribution Type:  sources
+Location:           html/vendors/jstree/
+
+Shepherd
+Website:            https://shepherdjs.dev
+Version:            8.1.0
+License:            MIT License
+Distribution Type:  sources
+Location:           html/vendors/shepherd/
+
+JSDoc
+Website:            https://github.com/jsdoc/jsdoc
+Version:            4.0.4
+License:            Apache License 2.0
+Distribution Type:  sources
+Location:           html/client/scripts/,
+                    html/client/styles/,
+                    html/guide/scripts/,
+                    html/guide/styles/
+
+Docdash
+Website:            https://github.com/clenemt/docdash
+License:            Apache License 2.0
+Distribution Type:  sources
+Location:           html/client/scripts/,
+                    html/client/styles/,
+                    html/guide/scripts/,
+                    html/guide/styles/
+
+code-pretify
+Website:            https://github.com/google/code-prettify
+License:            Apache License 2.0
+Distribution Type:  sources
+Location:           html/client/scripts/,
+                    html/client/styles/,
+                    html/guide/scripts/,
+                    html/guide/styles/
+
+simple-jsonrpc-js
+Website:            https://www.npmjs.org/package/simple-jsonrpc-js
+Version:            1.2.0
+License:            MIT License
+Distribution Type:  binary
+Location:           node.*
+
+NodeJS
+Website:            https://nodejs.org
+Version:            18.5.0
+License:            MIT License
+Distribution Type:  binary
+Location:           node.*
+
+Pkg
+Website:            https://www.npmjs.com/package/pkg
+Version:            5.8.1
+License:            MIT License
+Distribution Type:  binary
+Location:           node.*
+
+bonjour
+Website:            https://www.npmjs.com/package/bonjour
+Version:            3.3.0
+License:            MIT License
+Distribution Type:  binary
+Location:           node.*
+
+Commander.js
+Website:            https://www.npmjs.com/package/commander
+Version:            11.1.0
+License:            MIT License
+Distribution Type:  binary
+Location:           node.*
+
+debug
+Website:            https://www.npmjs.com/package/debug
+Version:            4.4.0
+License:            MIT License
+Distribution Type:  binary
+Location:           node.*
+
+express
+Website:            https://www.npmjs.com/package/express
+Version:            4.21.2
+License:            MIT License
+Distribution Type:  binary
+Location:           node.*
+
+jsep
+Website:            https://www.npmjs.com/package/jsep
+Version:            1.4.0
+License:            MIT License
+Distribution Type:  binary
+Location:           node.*
+
+open
+Website:            https://www.npmjs.com/package/open
+Version:            8.4.2
+License:            MIT License
+Distribution Type:  binary
+Location:           node.*
+
+WebSocket (WS)
+Website:            https://www.npmjs.com/package/ws
+Version:            8.18.1
+License:            MIT License
+Distribution Type:  binary
+Location:           node.*
+
+bcrypt.js
+Website:            https://www.npmjs.com/package/bcryptjs
+Version:            2.4.3
+License:            MIT License
+Distribution Type:  binary
+Location:           node.*
+
+node.bcrypt.js
+Website:            https://www.npmjs.com/package/bcrypt
+Version:            5.1.1
+License:            MIT License
+Distribution Type:  binary
+Location:           node.*
+
+Node-RED
+Website:            https://nodered.org
+Version:            4.0.9
+License:            Apache License 2.0
+Distribution Type:  binary
+Location:           node.*
+
+ref-napi
+Website:            https://www.npmjs.com/package/ref-napi
+Version:            3.0.3
+License:            MIT
+Distribution Type:  binary
+Location:           node.*
+
+ref-array-di
+Website:            https://www.npmjs.com/package/ref-array-di
+Version:            1.2.2
+License:            MIT
+Distribution Type:  binary
+Location:           node.*
+
+ref-struct-di
+Website:            https://www.npmjs.com/package/ref-struct-di
+Version:            1.1.1
+License:            MIT
+Distribution Type:  binary
+Location:           node.*
+
+ref-union-di
+Website:            https://www.npmjs.com/package/ref-union-di
+Version:            1.0.1
+License:            MIT
+Distribution Type:  binary
+Location:           node.*
+
+node-addon-api
+Website:            https://www.npmjs.com/package/node-addon-api
+Version:            7.0.0
+License:            MIT
+Distribution Type:  binary
+Location:           node.*
+
+FreeMASTER JSON-RPC Client
+Version:            1.4.0
+Author:             NXP
+License:            BSD-3-Clause
+Distribution Type:  source
+Location:           node.*

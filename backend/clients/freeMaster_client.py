@@ -3,6 +3,9 @@ import jsonrpcclient
 import asyncio
 import logging
 
+COMB_MAX_NUM = 60
+
+
 class FreeMasterClient:
     def __init__(
             self,
@@ -29,6 +32,8 @@ class FreeMasterClient:
         self.COMB_MAX_NUM = None
         self.pp_LC_base = None
 
+        self.initFlag = False
+
     def _build_connection(self):
         # 基本参数
         conn = f"{self.conn_type}; port={self.port};speed={self.speed};"
@@ -38,7 +43,7 @@ class FreeMasterClient:
         return conn
 
     async def _connect(self):
-        if self.ws is None or self.ws.close:
+        if self.ws is None or self.ws.close  != websockets.protocol.State.OPEN:
             self.ws = await websockets.connect(self.service_url)
 
     async def _send_request(self, method, *args):
@@ -53,20 +58,39 @@ class FreeMasterClient:
         else:
             raise Exception(response.message)
 
+    def connect(self):
+        try:
+            self.loop.run_until_complete(self._connect())
+            if self.ws is None or self.ws.close != websockets.protocol.State.OPEN:
+                return False
+            return True
+        except Exception as e:
+            return False
+
     def init(self):
         async def _init():
             try:
                 await self._connect()
                 connection = self._build_connection()
-                await self._send_request('StartComm', connection)
+                data = await self._send_request('IsCommPortOpen')
+                if not data:
+                    await self._send_request('StartComm', connection)
                 data = await self._send_request('ReadTSA')
                 data_base = await self._send_request('GetSymbolInfo', "SysMatrixRun.pp_R[0][0][0]")
                 data = await self._send_request('GetSymbolInfo', "SysMatrixRun.pp_R[0][1][0]")
-                self.pp_R_base = data_base['addr']
-                self.MATRIX_MAX_SIZE = int((data['addr'] - data_base['addr']) / 4)
+                pp_R_d_base = data_base['addr']
+                MATRIX_MAX_d_SIZE = int((data['addr'] - data_base['addr']) / 4)
                 data_base = await self._send_request('GetSymbolInfo', "SysMatrixRun.pp_LC[0][0]")
-                self.pp_LC_base = data_base['addr']
-                self.COMB_MAX_NUM = int((self.pp_LC_base - self.pp_R_base) / (self.MATRIX_MAX_SIZE * self.MATRIX_MAX_SIZE * 4))
+                pp_LC_d_base = data_base['addr']
+                COMB_MAX_d_NUM = int((pp_LC_d_base - pp_R_d_base) / (MATRIX_MAX_d_SIZE * MATRIX_MAX_d_SIZE * 4))
+
+                if self.pp_R_base == pp_R_d_base:
+                    return True
+
+                self.pp_R_base = pp_R_d_base
+                self.MATRIX_MAX_SIZE = MATRIX_MAX_d_SIZE
+                self.pp_LC_base = pp_LC_d_base
+                self.COMB_MAX_NUM = COMB_MAX_d_NUM
 
                 # 注册pp_R
                 for i in range(self.COMB_MAX_NUM):
@@ -127,7 +151,59 @@ class FreeMasterClient:
                     except Exception as e:
                         logging.warning(f"DefineVariable failed: {variable['name']} - {e}")
 
-                await self._send_request('StopComm')
+                # 注册系统矩阵
+                one_dim_uint8 = ['L_indices', 'C_indices', 'igbt_indices', 'diode_indices']
+                for arr in one_dim_uint8:
+                    for i in range(self.MATRIX_MAX_SIZE):
+                        variable = {
+                            'name': f"MatrixHandle.{arr}[{i}]",
+                            'addr': f"MatrixHandle.{arr}[{i}]",
+                            'type': 'uint',
+                            'size': 1
+                        }
+                        try:
+                            await self._send_request('DefineVariable', variable)
+                        except Exception as e:
+                            logging.warning(f"DefineVariable failed: {variable['name']} - {e}")
+                one_uint8 = ['L_num', 'C_num', 'igbt_num', 'diode_num', 'comb_num']
+                for arr in one_uint8:
+                    variable = {
+                        'name': f"MatrixHandle.{arr}",
+                        'addr': f"MatrixHandle.{arr}",
+                        'type': 'uint',
+                        'size': 1
+                    }
+                    try:
+                        await self._send_request('DefineVariable', variable)
+                    except Exception as e:
+                        logging.warning(f"DefineVariable failed: {variable['name']} - {e}")
+                one_dim_uint32 = ['comb_map_key', 'comb_map_value']
+                for arr in one_dim_uint32:
+                    for i in range(COMB_MAX_NUM):
+                        variable = {
+                            'name': f"MatrixHandle.{arr}[{i}]",
+                            'addr': f"MatrixHandle.{arr}[{i}]",
+                            'type': 'uint',
+                            'size': 4
+                        }
+                        try:
+                            await self._send_request('DefineVariable', variable)
+                        except Exception as e:
+                            logging.warning(f"DefineVariable failed: {variable['name']} - {e}")
+
+                # 注册控制变量
+                variable = {
+                    'name': f"NewCtrl",
+                    'addr': f"NewCtrl",
+                    'type': 'uint',
+                    'size': 4
+                }
+                try:
+                    await self._send_request('DefineVariable', variable)
+                except Exception as e:
+                    logging.warning(f"DefineVariable failed: {variable['name']} - {e}")
+
+                # await self._send_request('StopComm')
                 return True
             except Exception as e:
                 logging.error(f"Init failed: {e}")
@@ -136,32 +212,61 @@ class FreeMasterClient:
         return self.loop.run_until_complete(_init())
 
     def start(self):
+        async def _start():
+            try:
+                connection = self._build_connection()
+                await self._send_request('StartComm', connection)
+                return True
+            except Exception as e:
+                logging.error(f"Start failed: {e}")
+                raise
+
         try:
-            self.loop.run_until_complete(self._send_request('StartComm', self.connection))
-            return True
+            return self.loop.run_until_complete(_start())
         except Exception as e:
             logging.error(f"Start failed: {e}")
             return False
 
     def stop(self):
+        async def _stop():
+            try:
+                await self._send_request('StopComm')
+                return True
+            except Exception as e:
+                logging.error(f"Stop failed: {e}")
+                raise
+
         try:
-            self.loop.run_until_complete(self._send_request('StopComm'))
-            return True
+            return self.loop.run_until_complete(_stop())
         except Exception as e:
             logging.error(f"Stop failed: {e}")
             return False
 
     def write_variable(self, name, value):
+        async def _write_variable(name, value):
+            try:
+                await self._send_request('WriteVariable', name, value)
+                return True
+            except Exception as e:
+                logging.error(f"WriteVariable failed: {name} - {e}")
+                raise
+
         try:
-            self.loop.run_until_complete(self._send_request('WriteVariable', name, value))
-            return True
+            return self.loop.run_until_complete(_write_variable(name, value))
         except Exception as e:
             logging.error(f"WriteVariable failed: {name} - {e}")
             return False
 
     def read_variable(self, name):
+        async def _read_variable(name):
+            try:
+                return await self._send_request('ReadVariable', name)
+            except Exception as e:
+                logging.error(f"ReadVariable failed: {name} - {e}")
+                raise
+
         try:
-            return self.loop.run_until_complete(self._send_request('ReadVariable', name))
+            return self.loop.run_until_complete(_read_variable(name))
         except Exception as e:
             logging.error(f"ReadVariable failed: {name} - {e}")
             return None
@@ -170,10 +275,9 @@ class FreeMasterClient:
 freeMaster_client = FreeMasterClient()
 
 if __name__ == "__main__":
-    client = FreeMasterClient()
-    client.init()
-    client.start()
-    client.write_variable('SysMatrixRun.vhs[5]', 123456)
-    value = client.read_variable('SysMatrixRun.vhs[5]')
+    freeMaster_client.init()
+    freeMaster_client.start()
+    freeMaster_client.write_variable('SysMatrixRun.vhs[5]', 123456)
+    value = freeMaster_client.read_variable('SysMatrixRun.vhs[5]')
     print('Read value:', value)
-    client.stop()
+    freeMaster_client.stop()

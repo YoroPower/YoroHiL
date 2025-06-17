@@ -190,6 +190,49 @@ def psimXML(dt, xml_path):
                             new_pair.append(n)
                     item['nodes'] = new_pair
 
+    all_values = set()
+    for pair in accList:
+        all_values.update(pair)
+
+    # 找到最小值和最大值
+    min_value = min(all_values)
+    max_value = max(all_values)
+
+    # 检查缺失的连续值
+    missing_values = []
+    for value in range(min_value, max_value + 1):
+        if value not in all_values:
+            missing_values.append(value)
+
+    # 标记是否有缺失的值
+    has_continua = len(missing_values) == 0
+
+    # 如果存在缺失的值，进行处理
+    if not has_continua:
+        # 更新 accList 中的值，先处理比缺失值大的情况
+        new_accList = []
+        for pair in accList:
+            new_pair = []
+            for num in sorted(pair, reverse=True):  # 倒序处理
+                for missing in missing_values:
+                    if num > missing:
+                        num -= 1  # 大于缺失值的数减1
+                new_pair.append(num)
+            new_accList.append(new_pair)
+        accList = new_accList
+
+        # # 更新 item['nodes'] 中的值 还没写好，有点缺陷
+        # for key in meass:
+        #     for item in meass[key]:
+        #         new_pair = item['nodes']
+        #         for num in sorted(item['nodes'], reverse=True):  # 倒序处理
+        #             n = int(num)
+        #             for missing in missing_values:
+        #                 if int(num) > missing:
+        #                     n -= 1  # 大于缺失值的数减1
+        #             new_pair.append(n)
+        #         item['nodes'] = new_pair
+
     return post_processing(dt, comps, accList, attr, meass)
 
 
