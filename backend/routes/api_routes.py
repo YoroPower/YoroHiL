@@ -4,6 +4,7 @@ from backend.services.heartbeat_service import heartbeat_service
 from backend.services.serial_service import  setComPort
 from backend.cirSim.simMatrix import obj_SimMatrix
 from backend.cirSim.hardMatrix import obj_HardMatrix
+from backend.clients.freeMaster_client import freeMaster_client
 
 api_bp = Blueprint('api', __name__)
 api_test = Blueprint('test', __name__)
@@ -69,8 +70,19 @@ def set_hw_connect():
 
 
 @api_test.route('/set/topology', methods=['POST'])
-def set_topology():
+def test_set_topology():
     return jsonify({"status": "OK"})
 
+
+@api_test.route('/ReadVariable', methods=['POST'])
+def test_ReadVariable():
+    data = request.json
+    name = data.get('name')
+    try:
+        v = freeMaster_client.read_variable(name)
+    except Exception as e:
+        return jsonify({"status": "ERR", "reason": str(e)})
+
+    return jsonify({"status": "OK","value": v})
 
 

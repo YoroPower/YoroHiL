@@ -17,7 +17,7 @@ def GetPath():
 def create_app():
     productApp = Flask(__name__, static_folder='../frontend/my-app/out')
     productApp.register_blueprint(api_bp, url_prefix='/api')
-    productApp.register_blueprint(api_test, url_prefix='/api/test')
+    productApp.register_blueprint(api_test, url_prefix='/test')
     CORS(productApp, supports_credentials=True)
     return productApp
 
