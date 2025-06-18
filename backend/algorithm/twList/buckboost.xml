@@ -9,7 +9,7 @@
         <Component Type="GATING" Name="G1" NodeCount="1">
             <Coord Page="0" X="510" Y="470" Direction="180" Flip=""/>
             <Area Page="0" Left="490" Right="530" Top="460" Bottom="480"/>
-            <CNode Index="0" NodeId="1" CircuitType="Power" Page="0" X="490" Y="470">0</CNode>
+            <CNode Index="0" NodeId="1" CircuitType="Power" Page="0" X="490" Y="470">1</CNode>
             <Param Name="Frequency" Index="1">10000</Param>
             <Param Name="No. of Points" Index="2">2</Param>
             <Param Name="Switching Points" Index="3">{0,360}</Param>
@@ -17,7 +17,7 @@
         <Component Type="VDC" Name="VDC1" NodeCount="2">
             <Coord Page="0" X="430" Y="405" Direction="0" Flip=""/>
             <Area Page="0" Left="420" Right="440" Top="380" Bottom="430"/>
-            <CNode Index="0" NodeId="4" CircuitType="Power" Page="0" X="430" Y="380">1</CNode>
+            <CNode Index="0" NodeId="4" CircuitType="Power" Page="0" X="430" Y="380">4</CNode>
             <CNode Index="1" NodeId="0" CircuitType="Ground" Page="0" X="430" Y="430">0</CNode>
             <Param Name="Amplitude" Index="1">10</Param>
             <Param Name="Rseries" Index="2">0.001</Param>
@@ -26,9 +26,9 @@
         <Component Type="MOSFET" Name="Q1" NodeCount="3">
             <Coord Page="0" X="485" Y="340" Direction="270" Flip=""/>
             <Area Page="0" Left="460" Right="510" Top="320" Bottom="360"/>
-            <CNode Index="0" NodeId="4" CircuitType="Power" Page="0" X="460" Y="340">1</CNode>
-            <CNode Index="1" NodeId="3" CircuitType="Power" Page="0" X="510" Y="340">2</CNode>
-            <CNode Index="2" NodeId="1" CircuitType="Power" Page="0" X="490" Y="360">8</CNode>
+            <CNode Index="0" NodeId="4" CircuitType="Power" Page="0" X="460" Y="340">4</CNode>
+            <CNode Index="1" NodeId="3" CircuitType="Power" Page="0" X="510" Y="340">3</CNode>
+            <CNode Index="2" NodeId="1" CircuitType="Power" Page="0" X="490" Y="360">1</CNode>
             <Param Name="On Resistance" Index="1">0.0048</Param>
             <Param Name="Diode Voltage Drop" Index="2">3</Param>
             <Param Name="Rd" Index="3">0.001</Param>
@@ -39,7 +39,7 @@
         <Component Type="L" Name="L1" NodeCount="2">
             <Coord Page="0" X="530" Y="405" Direction="90" Flip=""/>
             <Area Page="0" Left="520" Right="540" Top="380" Bottom="430"/>
-            <CNode Index="0" NodeId="3" CircuitType="Power" Page="0" X="530" Y="380">2</CNode>
+            <CNode Index="0" NodeId="3" CircuitType="Power" Page="0" X="530" Y="380">3</CNode>
             <CNode Index="1" NodeId="0" CircuitType="Ground" Page="0" X="530" Y="430">0</CNode>
             <Param Name="Inductance" Index="1">0.1</Param>
             <Param Name="Initial Current" Index="2">0</Param>
@@ -49,8 +49,8 @@
         <Component Type="DIODE" Name="D1" NodeCount="2">
             <Coord Page="0" X="575" Y="340" Direction="0" Flip="X"/>
             <Area Page="0" Left="550" Right="600" Top="330" Bottom="350"/>
-            <CNode Index="0" NodeId="2" CircuitType="Power" Page="0" X="600" Y="340">3</CNode>
-            <CNode Index="1" NodeId="3" CircuitType="Power" Page="0" X="550" Y="340">2</CNode>
+            <CNode Index="0" NodeId="2" CircuitType="Power" Page="0" X="600" Y="340">2</CNode>
+            <CNode Index="1" NodeId="3" CircuitType="Power" Page="0" X="550" Y="340">3</CNode>
             <Param Name="Diode Voltage Drop" Index="1">0.7</Param>
             <Param Name="Rd" Index="2">0.001</Param>
             <Param Name="Initial Position" Index="3">0</Param>
@@ -60,7 +60,7 @@
         <Component Type="R" Name="R3" NodeCount="2">
             <Coord Page="0" X="600" Y="405" Direction="90" Flip=""/>
             <Area Page="0" Left="590" Right="610" Top="380" Bottom="430"/>
-            <CNode Index="0" NodeId="2" CircuitType="Power" Page="0" X="600" Y="380">3</CNode>
+            <CNode Index="0" NodeId="2" CircuitType="Power" Page="0" X="600" Y="380">2</CNode>
             <CNode Index="1" NodeId="0" CircuitType="Ground" Page="0" X="600" Y="430">0</CNode>
             <Param Name="Resistance" Index="1">100</Param>
             <Param Name="Current Flag" Index="2">0</Param>
@@ -76,7 +76,7 @@
         <Component Type="C" Name="C1" NodeCount="2">
             <Coord Page="0" X="670" Y="405" Direction="90" Flip=""/>
             <Area Page="0" Left="660" Right="680" Top="380" Bottom="430"/>
-            <CNode Index="0" NodeId="2" CircuitType="Power" Page="0" X="670" Y="380">3</CNode>
+            <CNode Index="0" NodeId="2" CircuitType="Power" Page="0" X="670" Y="380">2</CNode>
             <CNode Index="1" NodeId="0" CircuitType="Ground" Page="0" X="670" Y="430">0</CNode>
             <Param Name="Capacitance" Index="1">9.999999999999999E-05</Param>
             <Param Name="Init. Cap. Voltage" Index="2">0</Param>

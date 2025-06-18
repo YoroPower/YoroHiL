@@ -124,7 +124,7 @@ class FreeMasterClient:
                             logging.warning(f"DefineVariable failed: {variable['name']} - {e}")
 
                 # 注册一维数组
-                one_dim_float = ['YL', 'YC', 'YR', 'vhs', 'J']
+                one_dim_float = ['YL', 'YC', 'YR', 'vhs', 'J', 'I']
                 for arr in one_dim_float:
                     for i in range(self.MATRIX_MAX_SIZE):
                         variable = {

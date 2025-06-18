@@ -200,7 +200,7 @@ def psimXML(dt, xml_path):
 
     # 检查缺失的连续值
     missing_values = []
-    for value in range(min_value, max_value + 1):
+    for value in range(max_value, min_value - 1, -1):  # 从大到小遍历
         if value not in all_values:
             missing_values.append(value)
 
@@ -213,7 +213,7 @@ def psimXML(dt, xml_path):
         new_accList = []
         for pair in accList:
             new_pair = []
-            for num in sorted(pair, reverse=True):  # 倒序处理
+            for num in pair:
                 for missing in missing_values:
                     if num > missing:
                         num -= 1  # 大于缺失值的数减1
@@ -225,7 +225,7 @@ def psimXML(dt, xml_path):
         # for key in meass:
         #     for item in meass[key]:
         #         new_pair = item['nodes']
-        #         for num in sorted(item['nodes'], reverse=True):  # 倒序处理
+        #         for num in item['nodes']:  # 倒序处理
         #             n = int(num)
         #             for missing in missing_values:
         #                 if int(num) > missing:
