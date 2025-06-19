@@ -43,11 +43,16 @@ def static_proxy(path):
 def start_fmlite_server() -> subprocess.Popen:
     fmlite_server_path = os.path.join(GetPath(), "fmlite", "fmlite.exe")
 
-    startupinfo = subprocess.STARTUPINFO()
-    # startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW  # 隐藏窗口
-    # startupinfo.wShowWindow = subprocess.SW_HIDE  # 窗口不可见
+    args = [
+        '--no-open_path',
+        '-b yoro master'
+    ]
 
-    return subprocess.Popen([fmlite_server_path],
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW  # 隐藏窗口
+    startupinfo.wShowWindow = subprocess.SW_HIDE  # 窗口不可见
+
+    return subprocess.Popen([fmlite_server_path] + args,
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE,
                             startupinfo=startupinfo,  # 应用窗口配置
@@ -83,6 +88,7 @@ def run_flask(event_dict):
 if __name__ == '__main__':
     manager = multiprocessing.Manager()
     event_main = manager.dict()
+    event_main["flask_exit"] = manager.Event()
     flask_process = multiprocessing.Process(target=run_flask, args=(event_main,))
     flask_process.start()
     print('\n backMain start')
@@ -92,5 +98,5 @@ if __name__ == '__main__':
             time.sleep(1)
         except KeyboardInterrupt:
             quit = False
-    event_main["rides_exit"].set()
+    event_main["flask_exit"].set()
     flask_process.join()

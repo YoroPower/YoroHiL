@@ -30,6 +30,7 @@ def psimXML(dt, xml_path):
         # 遍历所有元件
         for comp in root.findall(".//CCircuit/Component"):
             comp_type = comp.get("Type")
+            comp_name = comp.get("Name")
             nodes = [n.text.strip() for n in comp.findall("CNode")]
 
             # 记录测量元件
@@ -94,6 +95,7 @@ def psimXML(dt, xml_path):
             # 生成有效支路
             if type_mapping.get(comp_type, None) is not None:
                 component_data = {
+                    'name': comp_name,
                     'type': comp_type,
                     'nodes': nodes,
                     'attr': type_mapping[comp_type]
@@ -150,6 +152,7 @@ def psimXML(dt, xml_path):
 
     accList = [[int(node) for node in item['nodes']] for item in comps]
     attr = [item['attr'] for item in comps]
+    attrName = [item['name'] for item in comps]
 
     # 处理独立电压源，针对没有放置G地标志的情况
     has_zero = any(0 in pair for pair in accList)
@@ -233,7 +236,7 @@ def psimXML(dt, xml_path):
         #             new_pair.append(n)
         #         item['nodes'] = new_pair
 
-    return post_processing(dt, comps, accList, attr, meass)
+    return post_processing(dt, comps, accList, attrName, attr, meass)
 
 
 # 调用示例
@@ -243,6 +246,6 @@ if __name__ == "__main__":
     results = psimXML(tdt, xml_file_path)
 
     # 可以根据需要对结果进行处理
-    observable_data, accList, attr, A, n_igbt, G_inv_R, G_inv_LC, YR, YL, YC, J = results
+    observable_data, accList, attrName, attr, A, n_igbt, G_inv_R, G_inv_LC, YR, YL, YC, J = results
 
     print("OVER")

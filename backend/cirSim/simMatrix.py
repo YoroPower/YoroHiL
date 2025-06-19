@@ -14,6 +14,7 @@ class MatrixData:
     def __init__(self):
         self.observable_data = None  # 可观测数据列表
         self.accList = None  # 支路列表
+        self.attrName = None  # 支路器件名称列表
         self.attr = None  # 支路属性列表
         self.A = None  # 支路-节点矩阵
         self.n_igbt = None  # 可控器件数量
@@ -41,6 +42,7 @@ class SimMatrix:
         try:
             (self.XMLData.observable_data,
              self.XMLData.accList,
+             self.XMLData.attrName,
              self.XMLData.attr,
              self.XMLData.A,
              self.XMLData.n_igbt,
@@ -61,6 +63,7 @@ class SimMatrix:
         try:
             (self.NETData.observable_data,
              self.NETData.accList,
+             self.NETData.attrName,
              self.NETData.attr,
              self.NETData.A,
              self.NETData.n_igbt,
@@ -103,6 +106,9 @@ class SimMatrix:
             data = self.NETData
         elif self.SimType == 2:
             data = MatrixData() # 预设新构建
+
+        if data.file_path is None:
+            return jsonify({"status": "ERR", "reason": "接线表未选择"}), 400
 
         try:
             obj_HardMatrix.NewCtrlReread()

@@ -22,12 +22,13 @@ Rwire = 1e-4  # 线电阻
 IGBT_Ysw = 0.01  # 开关管LC等效导纳 大于滤波电感导纳且小于滤波电容导纳 0.001<Ysw<200
 
 
-def post_processing(dt, comps,accList, attr, observable_data):
+def post_processing(dt, comps,accList, attrName, attr, observable_data):
     """
     处理接线表解析器共用的后处理逻辑
     :param dt:仿真步长(用于导纳计算)
     :param comps:具有与支路对应器件信息的list，标准参数值的键是’value’(用于矩阵生成)
     :param accList:支路表(用于矩阵生成)
+    :param attrName:支路元件名称标记
     :param attr:支路属性标记(用于矩阵生成。原样传出)
     :param observable_data:可观测数据字典(原样传出)
     :return:
@@ -110,6 +111,7 @@ def post_processing(dt, comps,accList, attr, observable_data):
     return [
         observable_data,
         accList,
+        attrName,
         attr,
         A,
         n_igbt,

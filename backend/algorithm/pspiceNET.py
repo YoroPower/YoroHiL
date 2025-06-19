@@ -269,8 +269,9 @@ def pspiceNET(dt, net_path):
 
     accList = [[int(node) for node in item['nodes']] for item in comps]
     attr = [item['attr'] for item in comps]
+    attrName = [item['name'][1:] if item['name'].startswith('_') else item['name'] for item in comps]
 
-    return post_processing(dt, comps, accList, attr, meass)
+    return post_processing(dt, comps, accList, attrName, attr, meass)
 
 
 # 调用示例
@@ -280,6 +281,6 @@ if __name__ == "__main__":
     results = pspiceNET(tdt, net_file_path)
 
     # 可以根据需要对结果进行处理
-    observable_data, accList, attr, A, n_igbt, G_inv_R, G_inv_LC, YR, YL, YC, J = results
+    observable_data, accList, attrName, attr, A, n_igbt, G_inv_R, G_inv_LC, YR, YL, YC, J = results
 
     print("OVER")
