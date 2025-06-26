@@ -30,7 +30,7 @@ def start_redis_server()-> subprocess.Popen:
 # 检查Redis服务器是否启动
 def check_redis_server():
     try:
-        rDP = redis.Redis(host='localhost', port=os.getenv("REDIS_PORT", 6379), db=0)
+        rDP = redis.Redis(host='127.0.0.1', port=os.getenv("REDIS_PORT", 6379), db=0)
         rDP.ping()  # 尝试发送ping命令
         return True
     except redis.exceptions.ConnectionError:
@@ -67,7 +67,7 @@ if __name__ == '__main__':
         process.terminate()
 
     # 连接到Redis服务器
-    r = redis.Redis(host='localhost', port=os.getenv("REDIS_PORT", 6379), db=0)
+    r = redis.Redis(host='127.0.0.1', port=os.getenv("REDIS_PORT", 6379), db=0)
     while True:
         """ """
         # 设置键值对

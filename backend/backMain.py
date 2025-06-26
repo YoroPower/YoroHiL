@@ -60,7 +60,7 @@ def start_fmlite_server() -> subprocess.Popen:
 
 def run_socketio():
     # socketio.run(frontApp, host='localhost', port=os.getenv("MAIN_PORT", 12233))
-    socketio.run(frontApp, host='localhost', port=os.getenv("MAIN_PORT", 12233), use_reloader=False)
+    socketio.run(frontApp, host='127.0.0.1', port=os.getenv("MAIN_PORT", 12233), use_reloader=False)
 
 def run_flask(event_dict):
     fmlite_subprocess = None
