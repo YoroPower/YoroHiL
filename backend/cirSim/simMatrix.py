@@ -7,7 +7,7 @@ import websockets
 from backend.algorithm import psimXML, pspiceNET
 from backend.algorithm import attrU, attrR, attrL, attrC, attrIP, attrIGBT, attrDiode, attrI
 from backend.clients.freeMaster_client import freeMaster_client
-from backend.cirSim.hardMatrix import  obj_HardMatrix
+from backend.cirSim.hardMatrix import obj_HardMatrix
 
 
 class MatrixData:
@@ -28,15 +28,28 @@ class MatrixData:
 
         self.file_path = None  # 已选择的文件路径
 
+
+class IOData:
+    def __init__(self):
+        self.pins_in = None
+        self.pins_out = None
+        self.range = None
+
+
 class SimMatrix:
 
     def __init__(self):
         self.XMLData = MatrixData()
         self.NETData = MatrixData()
 
-        self.dt = 1e-6 # 仿真步长
+        self.IO = IOData()
 
-        self.SimType = 0 # 0 XML 1 NET 2 预设电路
+        self.dt = 1e-6  # 仿真步长
+
+        self.SimType = 0  # 0 XML 1 NET 2 预设电路
+
+        self.INID_PINS = ["PI0", "PI1", "PI2", "PI3", ]
+        self.OUTID_PINS = ["PO0", "PO1", "PO2", "PO3", ]
 
     def loadXML(self, xml_file_path):
         try:
@@ -80,7 +93,7 @@ class SimMatrix:
 
         return jsonify({"status": "OK"})
 
-    def setType(self, stype:int):
+    def setType(self, stype: int):
         self.SimType = stype
 
     def simPreprocess(self):
@@ -105,13 +118,12 @@ class SimMatrix:
         elif self.SimType == 1:
             data = self.NETData
         elif self.SimType == 2:
-            data = MatrixData() # 预设新构建
+            data = MatrixData()  # 预设新构建
 
         if data.file_path is None:
             return jsonify({"status": "ERR", "reason": "接线表未选择"}), 400
 
         try:
-            obj_HardMatrix.NewCtrlReread()
             obj_HardMatrix.NewCtrlSimStop()
             """一些不需要预采集信息的debug(专供psim) 矩阵下载耗时，后续改造为开线程异步 呃，或许本来就是异步的，待测试"""
             if self.SimType == 0:
@@ -149,7 +161,7 @@ class SimMatrix:
                 comb_map_value = []
 
                 # 提取矩阵信息
-                for i in range( len(data.attr)):
+                for i in range(len(data.attr)):
                     if data.attr[i] == attrL:
                         L_indices.append(i)
                         numTemp_L += 1
@@ -194,7 +206,6 @@ class SimMatrix:
 
                 freeMaster_client.write_variable(f"MatrixHandle.comb_num", numTemp_comb)
 
-
                 obj_HardMatrix.NewCtrlSimRun()
             """"""
 
@@ -203,6 +214,73 @@ class SimMatrix:
 
         return jsonify({"status": "OK"})
 
+    def pinIOConfig(self, cfgI: list, cfgO: list):
+        try:
+            self.IO.pins_in = cfgI
+            self.IO.pins_out = cfgO
+
+            for i in range(freeMaster_client.IO_MAX_NUM):
+                freeMaster_client.write_variable(f"IOCfg.pinIn[{i}]", 0xFFFF)
+                freeMaster_client.write_variable(f"IOCfg.pinOut[{i}]", 0xFFFF)
+
+            input_pin_list = list(self.INID_PINS)
+            for cfg_entry in cfgI:
+                branch_name = cfg_entry['branch_name']
+                pin_name = cfg_entry['pin_name']
+
+                if branch_name not in self.XMLData.attrName:
+                    return jsonify({"status": "ERR", "reason": f"Branch name '{branch_name}' not found in attrName"})
+
+                branch_index = self.XMLData.attrName.index(branch_name)
+
+                if self.XMLData.attr[branch_index] != 5:
+                    return jsonify({"status": "ERR", "reason": f"Attribute value for '{branch_name}' is not attrGPIB"})
+
+                attr_five_index = sum(1 for i in range(branch_index + 1) if self.XMLData.attr[i] == 5) - 1
+
+                pin_index = input_pin_list.index(pin_name)
+
+                freeMaster_client.write_variable(f"IOCfg.pinIn[{attr_five_index}]", pin_index)
+
+            output_pin_list = list(self.OUTID_PINS)
+            for cfg_entry in cfgO:
+                branch_name = cfg_entry['branch_name']
+                pin_name = cfg_entry['pin_name']
+                pin_type = cfg_entry['type']
+
+                if branch_name not in self.XMLData.attrName:
+                    return jsonify({"status": "ERR", "reason": f"Branch name '{branch_name}' not found in attrName"})
+
+                branch_index = self.XMLData.attrName.index(branch_name)
+
+                if pin_type not in ['I', 'V']:
+                    return jsonify({"status": "ERR", "reason": f"Invalid type '{pin_type}' for pin '{pin_name}'"})
+                output_value = branch_index + 0xF000 if pin_type == 'I' else branch_index
+
+                pin_index = output_pin_list.index(pin_name)
+
+                freeMaster_client.write_variable(f"IOCfg.pinOut[{pin_index}]", output_value)
+
+                obj_HardMatrix.NewCtrlIOCfg()
+
+        except Exception as e:
+            return jsonify({"status": "ERR", "reason": str(e)})
+        return jsonify({"status": "OK"})
+
+    def rangeConfig(self, cfg: list):
+        try:
+            self.IO.range = cfg
+            for cfg_entry in cfg:
+                pin_name = cfg_entry['pin_name']
+                range = cfg_entry['range']
+
+                pin_index = self.OUTID_PINS.index(pin_name)
+                freeMaster_client.write_variable(f"IOCfg.range[{pin_index}]", range)
+            obj_HardMatrix.NewCtrlRangCfg()
+
+        except Exception as e:
+            return jsonify({"status": "ERR", "reason": str(e)})
+        return jsonify({"status": "OK"})
 
 
 obj_SimMatrix = SimMatrix()

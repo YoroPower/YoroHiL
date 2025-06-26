@@ -12,14 +12,14 @@ api_test = Blueprint('test', __name__)
 
 @api_bp.route('/device', methods=['GET'])
 def get_device():
-    return jsonify({"value": heartbeat_service.value})
+    return jsonify({"status": "OK","value": heartbeat_service.value})
 
 
 @api_bp.route('/device', methods=['POST'])
 def set_device():
     data = request.json
     heartbeat_service.value = data.get('value', heartbeat_service.value)
-    return jsonify({"value": heartbeat_service.value})
+    return jsonify({"status": "OK","value": heartbeat_service.value})
 
 
 @api_bp.route('/compots', methods=['GET'])
@@ -62,6 +62,78 @@ def set_sim_stop():
     data = request.json
     return obj_HardMatrix.NewCtrlSimStop()
 
+@api_bp.route('/sim/pinio', methods=['POST'])
+def set_sim_pinio():
+    data = request.get_json()
+    if not data or 'output_pins' not in data or not isinstance(data['output_pins'], list):
+        return jsonify({
+            'status': 'error',
+            'message': 'Invalid request body: output_pins must be a list'
+        }), 400
+
+    I_pins = []
+    for pin in data['input_pins']:
+        # 验证字段
+        if not isinstance(pin.get('branch_name'), str):
+            return jsonify({
+                'status': 'error',
+                'message': 'Invalid branch_name: must be an str'
+            }), 400
+        if pin.get('pin_name') not in obj_SimMatrix.INID_PINS:
+            return jsonify({
+                'status': 'error',
+                'message': f"Invalid pin_name: {pin.get('pin_name')} is not a valid pin"
+            }), 400
+
+        I_pins.append({
+            'branch_name': pin['branch_name'],
+            'pin_name': pin['pin_name']
+        })
+
+    if not data or 'output_pins' not in data or not isinstance(data['output_pins'], list):
+        return jsonify({
+            'status': 'error',
+            'message': 'Invalid request body: output_pins must be a list'
+        }), 400
+
+    O_pins = []
+    for pin in data['output_pins']:
+        # 验证字段
+        if not isinstance(pin.get('branch_name'), str):
+            return jsonify({
+                'status': 'error',
+                'message': 'Invalid branch_name: must be an str'
+            }), 400
+        if not isinstance(pin.get('type'), str):
+            return jsonify({
+                'status': 'error',
+                'message': 'Invalid type: must be an str'
+            }), 400
+        if pin.get('pin_name') not in obj_SimMatrix.OUTID_PINS:
+            return jsonify({
+                'status': 'error',
+                'message': f"Invalid pin_name: {pin.get('pin_name')} is not a valid pin"
+            }), 400
+
+        O_pins.append({
+            'branch_name': pin['branch_name'],
+            'pin_name': pin['pin_name'],
+            'type': pin['type']
+        })
+
+    return obj_SimMatrix.pinIOConfig(I_pins, O_pins)
+
+
+@api_bp.route('/sim/range', methods=['POST'])
+def set_sim_range():
+    data = request.get_json()
+    for data_entry in data:
+        if data_entry.get('pin_name') not in obj_SimMatrix.OUTID_PINS:
+            return jsonify({
+                'status': 'error',
+                'message': f"Invalid pin_name: {data_entry.get('pin_name')} is not a valid pin"
+            }), 400
+    return obj_SimMatrix.rangeConfig(data)
 
 @api_bp.route('/hw/connect', methods=['POST'])
 def set_hw_connect():

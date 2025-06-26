@@ -30,6 +30,7 @@ class FreeMasterClient:
         self.pp_R_base = None
         self.MATRIX_MAX_SIZE = None
         self.COMB_MAX_NUM = None
+        self.IO_MAX_NUM = None
         self.pp_LC_base = None
 
         self.initFlag = False
@@ -76,13 +77,19 @@ class FreeMasterClient:
                 if not data:
                     await self._send_request('StartComm', connection)
                 data = await self._send_request('ReadTSA')
+
                 data_base = await self._send_request('GetSymbolInfo', "SysMatrixRun.pp_R[0][0][0]")
                 data = await self._send_request('GetSymbolInfo', "SysMatrixRun.pp_R[0][1][0]")
                 pp_R_d_base = data_base['addr']
                 MATRIX_MAX_d_SIZE = int((data['addr'] - data_base['addr']) / 4)
+
                 data_base = await self._send_request('GetSymbolInfo', "SysMatrixRun.pp_LC[0][0]")
                 pp_LC_d_base = data_base['addr']
                 COMB_MAX_d_NUM = int((pp_LC_d_base - pp_R_d_base) / (MATRIX_MAX_d_SIZE * MATRIX_MAX_d_SIZE * 4))
+
+                data_base = await self._send_request('GetSymbolInfo', "IOCfg.range[0]")
+                data = await self._send_request('GetSymbolInfo', "IOCfg.pinIn[0]")
+                IO_MAX_d_NUM = int((data['addr'] - data_base['addr']) / 4)
 
                 if self.pp_R_base == pp_R_d_base:
                     return True
@@ -91,6 +98,7 @@ class FreeMasterClient:
                 self.MATRIX_MAX_SIZE = MATRIX_MAX_d_SIZE
                 self.pp_LC_base = pp_LC_d_base
                 self.COMB_MAX_NUM = COMB_MAX_d_NUM
+                self.IO_MAX_NUM = IO_MAX_d_NUM
 
                 # 注册pp_R
                 for i in range(self.COMB_MAX_NUM):
@@ -132,6 +140,32 @@ class FreeMasterClient:
                             'addr': f"SysMatrixRun.{arr}[{i}]",
                             'type': 'float',
                             'size': 4
+                        }
+                        try:
+                            await self._send_request('DefineVariable', variable)
+                        except Exception as e:
+                            logging.warning(f"DefineVariable failed: {variable['name']} - {e}")
+                one_dim_float = ['range']
+                one_dim_u16 = [ 'pinIn', 'pinOut']
+                for arr in one_dim_float:
+                    for i in range(20):
+                        variable = {
+                            'name': f"IOCfg.{arr}[{i}]",
+                            'addr': f"IOCfg.{arr}[{i}]",
+                            'type': 'float',
+                            'size': 4
+                        }
+                        try:
+                            await self._send_request('DefineVariable', variable)
+                        except Exception as e:
+                            logging.warning(f"DefineVariable failed: {variable['name']} - {e}")
+                for arr in one_dim_u16:
+                    for i in range(20):
+                        variable = {
+                            'name': f"IOCfg.{arr}[{i}]",
+                            'addr': f"IOCfg.{arr}[{i}]",
+                            'type': 'uint',
+                            'size': 2
                         }
                         try:
                             await self._send_request('DefineVariable', variable)

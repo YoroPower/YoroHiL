@@ -57,25 +57,47 @@ class ControlReg:
 
     @property
     def step(self):
-        return (self.value >> 15) & 0x1
+        return (self.value >> 16) & 0x1
 
     @step.setter
     def step(self, val):
         if val:
-            self.value |= (1 << 15)  # 设置step位
+            self.value |= (1 << 16)  # 设置step位
         else:
-            self.value &= ~(1 << 15)  # 清除step位
+            self.value &= ~(1 << 16)  # 清除step位
 
     @property
     def monitor(self):
-        return (self.value >> 16) & 0x1
+        return (self.value >> 17) & 0x1
 
     @monitor.setter
     def monitor(self, val):
         if val:
-            self.value |= (1 << 16)  # 设置monitor位
+            self.value |= (1 << 17)  # 设置monitor位
         else:
-            self.value &= ~(1 << 16)  # 清除monitor位
+            self.value &= ~(1 << 17)  # 清除monitor位
+
+    @property
+    def ioCfg(self):
+        return (self.value >> 18) & 0x1
+
+    @ioCfg.setter
+    def ioCfg(self, val):
+        if val:
+            self.value |= (1 << 18)  # 设置ioCfg位
+        else:
+            self.value &= ~(1 << 18)  # 清除ioCfg位
+
+    @property
+    def rangCfg(self):
+        return (self.value >> 19) & 0x1
+
+    @rangCfg.setter
+    def rangCfg(self, val):
+        if val:
+            self.value |= (1 << 19)  # 设置ioCfg位
+        else:
+            self.value &= ~(1 << 19)  # 清除ioCfg位
 
     def get_value(self):
         return self.value  # 返回当前32位寄存器值
@@ -129,6 +151,7 @@ class HardMatrix:
 
     def NewCtrlSimStop(self):
         try:
+            self.NewCtrlReread()
             self.NewCtrl.run = False
             self.NewCtrl.stop = True
             freeMaster_client.write_variable("NewCtrl", self.NewCtrl.get_value())
@@ -138,8 +161,27 @@ class HardMatrix:
 
     def NewCtrlSimRun(self):
         try:
+            self.NewCtrlReread()
             self.NewCtrl.run = True
             self.NewCtrl.stop = False
+            freeMaster_client.write_variable("NewCtrl", self.NewCtrl.get_value())
+        except Exception as e:
+            return jsonify({"status": "ERR", "reason": str(e)})
+        return jsonify({"status": "OK"})
+
+    def NewCtrlIOCfg(self):
+        try:
+            self.NewCtrlReread()
+            self.NewCtrl.ioCfg = True
+            freeMaster_client.write_variable("NewCtrl", self.NewCtrl.get_value())
+        except Exception as e:
+            return jsonify({"status": "ERR", "reason": str(e)})
+        return jsonify({"status": "OK"})
+
+    def NewCtrlRangCfg(self):
+        try:
+            self.NewCtrlReread()
+            self.NewCtrl.rangCfg = True
             freeMaster_client.write_variable("NewCtrl", self.NewCtrl.get_value())
         except Exception as e:
             return jsonify({"status": "ERR", "reason": str(e)})
