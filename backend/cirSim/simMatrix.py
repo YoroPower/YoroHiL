@@ -51,6 +51,16 @@ class SimMatrix:
         self.INID_PINS = ["PI0", "PI1", "PI2", "PI3", ]
         self.OUTID_PINS = ["PO0", "PO1", "PO2", "PO3", ]
 
+    def _getSimData(self):
+        data = self.XMLData
+        if self.SimType == 0:
+            data = self.XMLData
+        elif self.SimType == 1:
+            data = self.NETData
+        elif self.SimType == 2:
+            data = MatrixData()
+        return data
+
     def loadXML(self, xml_file_path):
         try:
             (self.XMLData.observable_data,
@@ -112,13 +122,7 @@ class SimMatrix:
         if freeMaster_client.ws is None or freeMaster_client.ws.state != websockets.protocol.State.OPEN:
             return jsonify({"status": "ERR", "reason": "freemaster未连接"}), 400
 
-        data = self.XMLData
-        if self.SimType == 0:
-            data = self.XMLData
-        elif self.SimType == 1:
-            data = self.NETData
-        elif self.SimType == 2:
-            data = MatrixData()  # 预设新构建
+        data = self._getSimData()
 
         if data.file_path is None:
             return jsonify({"status": "ERR", "reason": "接线表未选择"}), 400
@@ -126,87 +130,87 @@ class SimMatrix:
         try:
             obj_HardMatrix.NewCtrlSimStop()
             """一些不需要预采集信息的debug(专供psim) 矩阵下载耗时，后续改造为开线程异步 呃，或许本来就是异步的，待测试"""
-            if self.SimType == 0:
-                for index, (key, matrix) in enumerate(data.G_inv_R.items()):
-                    pp_R = (matrix @ data.A).T @ data.A
-                    for i in range(pp_R.shape[0]):  # 行数
-                        for j in range(pp_R.shape[1]):  # 列数
-                            freeMaster_client.write_variable(f"SysMatrixRun.pp_R[{index}][{i}][{j}]", pp_R[i][j])
+            # if self.SimType == 0:
+            for index, (key, matrix) in enumerate(data.G_inv_R.items()):
+                pp_R = (matrix @ data.A).T @ data.A
+                for i in range(pp_R.shape[0]):  # 行数
+                    for j in range(pp_R.shape[1]):  # 列数
+                        freeMaster_client.write_variable(f"SysMatrixRun.pp_R[{index}][{i}][{j}]", pp_R[i][j])
 
-                n = min(len(data.YL), len(data.YL[0]))
-                for index in range(n):
-                    value = data.YL[index][index]
-                    freeMaster_client.write_variable(f"SysMatrixRun.YL[{index}]", value)
+            n = min(len(data.YL), len(data.YL[0]))
+            for index in range(n):
+                value = data.YL[index][index]
+                freeMaster_client.write_variable(f"SysMatrixRun.YL[{index}]", value)
 
-                n = min(len(data.YC), len(data.YC[0]))
-                for index in range(n):
-                    value = data.YC[index][index]
-                    freeMaster_client.write_variable(f"SysMatrixRun.YC[{index}]", value)
+            n = min(len(data.YC), len(data.YC[0]))
+            for index in range(n):
+                value = data.YC[index][index]
+                freeMaster_client.write_variable(f"SysMatrixRun.YC[{index}]", value)
 
-                for index, value in enumerate(data.attr):
-                    freeMaster_client.write_variable(f"SysMatrixRun.attr[{index}]", value)
+            for index, value in enumerate(data.attr):
+                freeMaster_client.write_variable(f"SysMatrixRun.attr[{index}]", value)
 
-                for index, value in enumerate(data.J):
-                    freeMaster_client.write_variable(f"SysMatrixRun.J[{index}]", value)
+            for index, value in enumerate(data.J):
+                freeMaster_client.write_variable(f"SysMatrixRun.J[{index}]", value)
 
-                numTemp_L = 0
-                numTemp_C = 0
-                numTemp_igbt = 0
-                numTemp_diode = 0
-                L_indices = []
-                C_indices = []
-                igbt_indices = []
-                diode_indices = []
-                comb_map_key = []
-                comb_map_value = []
+            numTemp_L = 0
+            numTemp_C = 0
+            numTemp_igbt = 0
+            numTemp_diode = 0
+            L_indices = []
+            C_indices = []
+            igbt_indices = []
+            diode_indices = []
+            comb_map_key = []
+            comb_map_value = []
 
-                # 提取矩阵信息
-                for i in range(len(data.attr)):
-                    if data.attr[i] == attrL:
-                        L_indices.append(i)
-                        numTemp_L += 1
-                    elif data.attr[i] == attrC:
-                        C_indices.append(i)
-                        numTemp_C += 1
-                    elif data.attr[i] == attrIGBT:
-                        igbt_indices.append(i)
-                        numTemp_igbt += 1
-                    elif data.attr[i] == attrDiode:
-                        diode_indices.append(i)
-                        numTemp_diode += 1
-                for index in range(len(L_indices)):
-                    freeMaster_client.write_variable(f"MatrixHandle.L_indices[{index}]", L_indices[index])
-                for index in range(len(C_indices)):
-                    freeMaster_client.write_variable(f"MatrixHandle.C_indices[{index}]", C_indices[index])
-                for index in range(len(igbt_indices)):
-                    freeMaster_client.write_variable(f"MatrixHandle.igbt_indices[{index}]", igbt_indices[index])
-                for index in range(len(diode_indices)):
-                    freeMaster_client.write_variable(f"MatrixHandle.diode_indices[{index}]", diode_indices[index])
+            # 提取矩阵信息
+            for i in range(len(data.attr)):
+                if data.attr[i] == attrL:
+                    L_indices.append(i)
+                    numTemp_L += 1
+                elif data.attr[i] == attrC:
+                    C_indices.append(i)
+                    numTemp_C += 1
+                elif data.attr[i] == attrIGBT:
+                    igbt_indices.append(i)
+                    numTemp_igbt += 1
+                elif data.attr[i] == attrDiode:
+                    diode_indices.append(i)
+                    numTemp_diode += 1
+            for index in range(len(L_indices)):
+                freeMaster_client.write_variable(f"MatrixHandle.L_indices[{index}]", L_indices[index])
+            for index in range(len(C_indices)):
+                freeMaster_client.write_variable(f"MatrixHandle.C_indices[{index}]", C_indices[index])
+            for index in range(len(igbt_indices)):
+                freeMaster_client.write_variable(f"MatrixHandle.igbt_indices[{index}]", igbt_indices[index])
+            for index in range(len(diode_indices)):
+                freeMaster_client.write_variable(f"MatrixHandle.diode_indices[{index}]", diode_indices[index])
 
-                # 更新计数
-                freeMaster_client.write_variable("MatrixHandle.L_num", numTemp_L)
-                freeMaster_client.write_variable("MatrixHandle.C_num", numTemp_C)
-                freeMaster_client.write_variable("MatrixHandle.igbt_num", numTemp_igbt)
-                freeMaster_client.write_variable("MatrixHandle.diode_num", numTemp_diode)
+            # 更新计数
+            freeMaster_client.write_variable("MatrixHandle.L_num", numTemp_L)
+            freeMaster_client.write_variable("MatrixHandle.C_num", numTemp_C)
+            freeMaster_client.write_variable("MatrixHandle.igbt_num", numTemp_igbt)
+            freeMaster_client.write_variable("MatrixHandle.diode_num", numTemp_diode)
 
-                # R组合映射
-                numTemp_comb = 0
-                d_comb = 1 << numTemp_diode  # 2 ** numTemp_diode
-                i_comb = 1 << numTemp_igbt  # 2 ** numTemp_igbt
+            # R组合映射
+            numTemp_comb = 0
+            d_comb = 1 << numTemp_diode  # 2 ** numTemp_diode
+            i_comb = 1 << numTemp_igbt  # 2 ** numTemp_igbt
 
-                for i in range(i_comb):
-                    for j in range(d_comb):
-                        comb_map_key.append((j << 20) | i)
-                        comb_map_value.append(numTemp_comb)
-                        numTemp_comb += 1
+            for i in range(i_comb):
+                for j in range(d_comb):
+                    comb_map_key.append((j << 20) | i)
+                    comb_map_value.append(numTemp_comb)
+                    numTemp_comb += 1
 
-                for i in range(numTemp_comb):
-                    freeMaster_client.write_variable(f"MatrixHandle.comb_map_key[{i}]", comb_map_key[i])
-                    freeMaster_client.write_variable(f"MatrixHandle.comb_map_value[{i}]", comb_map_value[i])
+            for i in range(numTemp_comb):
+                freeMaster_client.write_variable(f"MatrixHandle.comb_map_key[{i}]", comb_map_key[i])
+                freeMaster_client.write_variable(f"MatrixHandle.comb_map_value[{i}]", comb_map_value[i])
 
-                freeMaster_client.write_variable(f"MatrixHandle.comb_num", numTemp_comb)
+            freeMaster_client.write_variable(f"MatrixHandle.comb_num", numTemp_comb)
 
-                obj_HardMatrix.NewCtrlSimRun()
+            obj_HardMatrix.NewCtrlSimRun()
             """"""
 
         except Exception as e:
@@ -219,6 +223,8 @@ class SimMatrix:
             self.IO.pins_in = cfgI
             self.IO.pins_out = cfgO
 
+            data = self._getSimData()
+
             for i in range(freeMaster_client.IO_MAX_NUM):
                 freeMaster_client.write_variable(f"IOCfg.pinIn[{i}]", 0xFFFF)
                 freeMaster_client.write_variable(f"IOCfg.pinOut[{i}]", 0xFFFF)
@@ -228,15 +234,15 @@ class SimMatrix:
                 branch_name = cfg_entry['branch_name']
                 pin_name = cfg_entry['pin_name']
 
-                if branch_name not in self.XMLData.attrName:
+                if branch_name not in data.attrName:
                     return jsonify({"status": "ERR", "reason": f"Branch name '{branch_name}' not found in attrName"})
 
-                branch_index = self.XMLData.attrName.index(branch_name)
+                branch_index = data.attrName.index(branch_name)
 
-                if self.XMLData.attr[branch_index] != 5:
+                if data.attr[branch_index] != 5:
                     return jsonify({"status": "ERR", "reason": f"Attribute value for '{branch_name}' is not attrGPIB"})
 
-                attr_five_index = sum(1 for i in range(branch_index + 1) if self.XMLData.attr[i] == 5) - 1
+                attr_five_index = sum(1 for i in range(branch_index + 1) if data.attr[i] == 5) - 1
 
                 pin_index = input_pin_list.index(pin_name)
 
@@ -248,10 +254,10 @@ class SimMatrix:
                 pin_name = cfg_entry['pin_name']
                 pin_type = cfg_entry['type']
 
-                if branch_name not in self.XMLData.attrName:
+                if branch_name not in data.attrName:
                     return jsonify({"status": "ERR", "reason": f"Branch name '{branch_name}' not found in attrName"})
 
-                branch_index = self.XMLData.attrName.index(branch_name)
+                branch_index = data.attrName.index(branch_name)
 
                 if pin_type not in ['I', 'V']:
                     return jsonify({"status": "ERR", "reason": f"Invalid type '{pin_type}' for pin '{pin_name}'"})

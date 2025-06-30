@@ -51,6 +51,18 @@ def set_sim_NET():
     return obj_SimMatrix.loadNET(net_path)
 
 
+@api_bp.route('/sim/settype', methods=['POST'])
+def set_sim_settype():
+    data = request.json
+    typenama = data.get('type')
+    type = 0
+    if typenama == "psim":
+        type = 0
+    elif typenama == "pspice":
+        type = 1
+    obj_SimMatrix.setType(type)
+    return jsonify({"status": "OK"})
+
 @api_bp.route('/sim/open', methods=['POST'])
 def set_sim_open():
     data = request.json

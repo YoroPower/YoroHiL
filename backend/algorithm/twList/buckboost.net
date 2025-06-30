@@ -1,10 +1,11 @@
 * source QUNER
 V_Vcc         N27721 0 10Vdc
 R_RL         0 OUT  100 TC=0,0 
-C_CL         0 OUT  10u  TC=0,0 
-L_L1         0 N33243 Lbreak 0.1H
+C_C1         0 OUT  100u  TC=0,0
 V_V1         N35220 N33243 DC 0 AC 0
 +PULSE 0 5 0 1n 1n 5u 20u
-X_M2         N27721 N339491 N33243 IRF2807
-R_RL1         N35220 N339491  0.001 TC=0,0
+R_RL1         N35220 N37049  0.001 TC=0,0
 D_D2         OUT N33243 Dbreak
+L_L1         0 N33243  0.1H
+X_Q1         N27721 N37049 N33243 IRF2807
+

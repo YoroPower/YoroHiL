@@ -8,6 +8,7 @@ a = Analysis(['main.py'],  # 应用程序的主脚本
              ('frontend/my-app/out', 'frontend/my-app/out'),  # 包含 HTML 模板
              ('backend/algorithm/syscfg', 'syscfg'), # 包含接线表配置
              ('database/Redis_win32', 'Redis_win32'), # 包含 Redis 的 windows 可执行文件
+             ('backend/fmlite', 'fmlite'), # 包含 fm 的 windows 可执行文件
              ],
              hiddenimports=['flask', 'flask_socketio', 'eventlet', 'serial',
                             # 这部分是必须手动指明的

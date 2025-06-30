@@ -47,9 +47,34 @@ def pspiceNET(dt, net_path):
         model_config = json.load(json_file)
 
     def parse_value(s):
-        """从字符串中提取浮点数（如'10u'→1e-5, '5Vdc'→5.0）"""
-        match = re.match(r'^([-+]?\d+\.?\d*([eE][-+]?\d+)?)', s.strip())
-        return float(match.group(1)) if match else 0.0
+        """从字符串中提取浮点数（如 '10u' → 1e-6, '5Vdc' → 5.0）"""
+
+        # 定义单位和对应的缩放因子
+        unit_scale = {
+            'u': 1e-6,  # 微
+            'm': 1e-3,  # 毫
+            '': 1,  # 无单位
+            'k': 1e3,  # 千
+            'M': 1e6,  # 兆
+            'G': 1e9,  # 吉
+            'T': 1e12,  # 太
+            'V': 1,  # 伏特，默认无缩放
+            'A': 1,  # 安培，默认无缩放
+            'W': 1,  # 瓦特，默认无缩放
+            'Hz': 1,  # 赫兹，默认无缩放
+            # 可以添加更多单位和相应缩放因子
+        }
+
+        # 使用正则表达式提取数值和单位
+        match = re.match(r'^([-+]?\d*\.?\d+)([a-zA-Z]*)', s.strip())
+        if match:
+            value = float(match.group(1))
+            unit = match.group(2)
+            # 根据单位缩放数值
+            scale = unit_scale.get(unit, 1)  # 默认为1，即不缩放
+            return value * scale
+
+        return 0.0  # 如果没有匹配到，返回0.0
 
     def enhanced_parse(parts):
         if not parts:
