@@ -14,8 +14,8 @@ if __name__ == '__main__':
     event_main["rides_exit"] = manager.Event()
     event_main["flask_exit"] = manager.Event()
 
-    redis_process = multiprocessing.Process(target=run_database_rides, args =(event_main,))
-    redis_process.start()
+    # redis_process = multiprocessing.Process(target=run_database_rides, args =(event_main,))
+    # redis_process.start()
     flask_process = multiprocessing.Process(target=run_flask, args=(event_main,))
     flask_process.start()
 
@@ -27,4 +27,4 @@ if __name__ == '__main__':
     event_main["rides_exit"].set()
     event_main["flask_exit"].set()
     flask_process.join()
-    redis_process.join()
+    # redis_process.join()
